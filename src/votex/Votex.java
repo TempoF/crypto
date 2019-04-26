@@ -10,7 +10,8 @@ package votex;
  * @author Tempori
  */
 public class Votex {
-
+ 
+    
     /**
      * @param args the command line arguments
      */
