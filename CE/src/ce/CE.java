@@ -231,7 +231,7 @@ public class CE extends javax.swing.JFrame {
                     ce.SHA256 sha;
                     try {
                         sha = new ce.SHA256("123456789");
-                        VOTE go=new VOTE(sha.getSha());
+                        ce.VOTE go=new ce.VOTE(sha.getSha());
                         go.setVisible(true);
                         
                     } catch (NoSuchAlgorithmException ex) {
