@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package votex;
+package ce;
 
 /**
  *
  * @author Tempori
  */
-public class Votex {
- 
-    
+public class CE {
+
     /**
      * @param args the command line arguments
      */
