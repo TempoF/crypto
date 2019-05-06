@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import objects.Candidates;
 import objects.Request;
+import objects.Response;
 
 /**
  *
@@ -32,17 +33,21 @@ public class MI {
         while(true){
             
             cli=sck.accept();
-            System.out.println("holaaaa");
             ObjectInputStream in= new ObjectInputStream(cli.getInputStream());
-            System.out.println("holaaaa");
             Object requestObj=(Request)in.readObject();
             Request req=(Request) requestObj;
-            System.out.println("holaaaa");
             
             String request=req.getRequest();
             System.out.println(request+" + "+(new SHA256("Verify")).getSha().equals(request));
+            
             if((new SHA256("Verify")).getSha().equals(request)){
-
+                System.out.println("Entra verify");
+                //db query
+                //H(H(CEL)+H(FINGERPRINT))==req.getMessage
+                Response resp=new Response(200,"Valido");
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                out.writeObject(resp);
+                
             }else if((new SHA256("Candidates")).getSha().equals(request)){
                 System.out.println("Entra sha");
                 ArrayList<Candidates> candidates=new ArrayList<>();

@@ -13,12 +13,17 @@ import java.io.Serializable;
  */
 public class Request implements Serializable {
     private String request;
+    private String message;
     
-    public Request(String HashCommand){
+    public Request(String HashCommand,String message){
         this.request=HashCommand;
+        this.message=message;
     }
     
     public String getRequest(){
         return this.request;
+    }
+    public String getMessage(){
+        return this.message;
     }
 }

@@ -7,15 +7,20 @@ package ce;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -24,6 +29,9 @@ import java.util.regex.*;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import objects.Candidates;
+import objects.Request;
+import objects.Response;
 
 /**
  *
@@ -34,7 +42,7 @@ public class CE extends javax.swing.JFrame {
     /**
      * Creates new form CE
      */
-    private String cel,fp;
+    private String cel;
     public CE() {
         initComponents();
     }
@@ -60,6 +68,12 @@ public class CE extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFont(new java.awt.Font("Leelawadee UI", 0, 14)); // NOI18N
+        setResizable(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -71,6 +85,7 @@ public class CE extends javax.swing.JFrame {
         jLabel1.setText("Welcome to the 2019 vote with");
 
         jTextField1.setFont(new java.awt.Font("Leelawadee UI", 0, 14)); // NOI18N
+        jTextField1.setText("FDASFD45645645H789");
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(100, 100, 100)));
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -116,7 +131,7 @@ public class CE extends javax.swing.JFrame {
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(38, 38, 38)
-                        .addComponent(jLabel3)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -139,14 +154,15 @@ public class CE extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1)))
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -209,16 +225,55 @@ public class CE extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jLabel6KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLabel6KeyPressed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jLabel6KeyPressed
 
     private void jLabel6FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jLabel6FocusGained
-        // TODO add your handling code here:
     }//GEN-LAST:event_jLabel6FocusGained
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+    }//GEN-LAST:event_formMouseClicked
     
     private void closeCE(){
         this.dispose();
     }
+    
+    private void validate(String fingerprint){
+        try {
+            Socket sck=new Socket("127.0.0.1",6987);
+            sck.setKeepAlive(true);
+            ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+            
+            SHA256 comd = new SHA256("Verify"); 
+            SHA256 vstring=new SHA256(this.cel+fingerprint);
+            
+            Request req=new Request(comd.getSha(),vstring.getSha());
+            out.writeObject(req);
+            ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+            Response response=(Response)in.readObject();
+            if (response.getCode()==200) {
+                VOTE go=new VOTE(fingerprint);
+                go.setVisible(true);
+                closeCE();
+            }else{
+                JOptionPane.showMessageDialog(this, "You are not registered in the electoral roll");
+                this.cel="";
+                jTextField1.requestFocus();
+                jTextField1.setText("");
+                jLabel7.setVisible(false);
+                jLabel6.setVisible(false);
+                jLabel3.setVisible(true);
+                jTextField1.setVisible(true);
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void  displayFingerPrintInput(){
         
         try {
@@ -227,27 +282,29 @@ public class CE extends javax.swing.JFrame {
             URL imageURL = Paths.get("img/fingerprint.gif").toUri().toURL();
             Icon icon=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(94, 96, Image.SCALE_DEFAULT));
             jLabel6.setIcon(icon);
+            
             jLabel6.addMouseListener(new MouseAdapter()  
             {
                 @Override
                 public void mouseClicked(MouseEvent e)
                 {                   
                     try {
-                        SHA256 sha = new SHA256("123456789");
-                        ce.VOTE go=new ce.VOTE(sha.getSha());
-                        go.setVisible(true);
-                        
+                        SHA256 sha = new SHA256("123456789");            
+                        validate(sha.getSha());
+//                      closeCE();
                     } catch (NoSuchAlgorithmException ex) {
                         Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-                    closeCE();
-                    
                 }
             });
-            jLabel7.setVisible(true);
             
-//        FDASFD45645645H789
+            jLabel7.setVisible(true);
+            jLabel6.setVisible(true);
+            //hilo escucha lector huella
+//            Runnable runnable =() -> { getCandidates(); };
+//            Thread thread = new Thread(runnable);
+//            thread.start();
+
         } catch (MalformedURLException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
         }

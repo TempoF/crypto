@@ -6,7 +6,11 @@
 package ce;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -20,9 +24,12 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 import objects.Candidates;
 import objects.Request;
 
@@ -59,8 +66,15 @@ public class VOTE extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -71,6 +85,10 @@ public class VOTE extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Choose your candidate");
 
+        jLabel3.setFont(new java.awt.Font("Leelawadee UI", 0, 12)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("<html><p align=\"center\">Click on the candidate of your choice, remember that your vote is secret and unique, once elected there will be no changes.</p></html>");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -79,14 +97,20 @@ public class VOTE extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(198, 198, 198)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 52, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(156, 156, 156)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(58, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,42 +123,76 @@ public class VOTE extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void vote(MouseEvent e){
+        System.out.println(e.getComponent().getName());
+    }
+    
+    private void displayCandidates(ArrayList<Candidates> options){
+            ArrayList<JLabel> labelCont=new ArrayList<>();
+            jLabel1.setVisible(false);
+            this.setSize(this.getWidth(), (220+(110*((int) Math.ceil(options.size()/2.0)))));            
+            int offsetx=0,offsety=0,i=0;
+            for(Candidates candidate: options){
+                //jlabels diseño
+                labelCont.add(new JLabel("<html>"+candidate.getName()+"<br>"+candidate.getParty()+"</html>"));
+                
+                labelCont.get(i).setName(candidate.getId());
+                labelCont.get(i).setSize(159,100);
+                labelCont.get(i).setVisible(true);
+                labelCont.get(i).setLocation(27+offsetx, 140+offsety);
+                
+                Border border = BorderFactory.createLineBorder(Color.white, 1);
+                labelCont.get(i).setBorder(border);
+                
+                labelCont.get(i).setForeground(new Color(197,197,197));
+                labelCont.get(i).setFont(new Font("LeelawadEE UI", Font.PLAIN, 14));
+                
+                labelCont.get(i).setHorizontalAlignment(JLabel.CENTER);
+                labelCont.get(i).setVerticalAlignment(JLabel.BOTTOM);
+                
+                labelCont.get(i).addMouseListener(new MouseAdapter()  
+                {
+                    @Override
+                    public void mouseClicked(MouseEvent e)
+                    {
+                        vote(e);
+                    }
+                });
+                
+                this.getContentPane().add(labelCont.get(i));
+                
+                offsetx+=169;
+                if (offsetx>169) {
+                    offsetx=0;
+                    offsety+=110;
+                }
+                i++;
+                
+                this.repaint();
+                this.revalidate();
+            }
+    }
     
     private void getCandidates(){
         try {
             Socket sck=new Socket("127.0.0.1",6987);
             sck.setKeepAlive(true);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
-           ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
-
             SHA256 comd = new SHA256("Candidates"); 
-            
-            Request req=new Request(comd.getSha());
-            System.out.println(req);
+            Request req=new Request(comd.getSha(),"");
             out.writeObject(req);
-            
+            ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
-            ArrayList<JLabel> labelCont=new ArrayList<JLabel>();
+            displayCandidates(candidates);
             
-            jLabel1.setVisible(false);
-            
-            int offsetx=0,offsety=0;
-            for(Candidates candidate: candidates){
-//                offsety=50;
-//                JLabel jl = new JLabel();
-//                jl.setName(candidate.getId());
-//                
-//                this.add(jl);
-//                jl.setText(candidate.getName()+"\n"+candidate.getParty());
-//                jl.setLocation(66+offsetx, 168+offsety);
-//                labelCont.add(jl);
-                System.out.println(candidate.getName());
-            }
             
         } catch (IOException ex) {
             Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
@@ -149,8 +207,10 @@ public class VOTE extends javax.swing.JFrame {
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
+            //diseño
             this.getContentPane().setBackground(new Color(70, 73, 75));            
-            jLabel2.setForeground(new Color(197,197,197));
+            jLabel2.setForeground(new Color(197,197,197));   
+            jLabel3.setForeground(new Color(197,197,197));
             
             BufferedImage logo1 = ImageIO.read(new File("img/title.png"));
             BufferedImage logo2= ImageIO.read(new File("img/logo.png"));
@@ -158,15 +218,24 @@ public class VOTE extends javax.swing.JFrame {
             jLabel4.setIcon(new ImageIcon(icon.getImage().getScaledInstance(169, 67, Image.SCALE_DEFAULT)));
             icon= new ImageIcon(logo2);
             jLabel5.setIcon(new ImageIcon(icon.getImage().getScaledInstance(63, 67, Image.SCALE_DEFAULT)));
-            java.net.URL imageURL = Paths.get("img/loading.gif").toUri().toURL();;
+            java.net.URL imageURL = Paths.get("img/loading.gif").toUri().toURL();
             Icon iconl=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(54, 52, Image.SCALE_DEFAULT));
             jLabel1.setIcon(iconl);
+            
             //tcp al MI
+            Runnable runnable =() -> { getCandidates(); };
+            Thread thread = new Thread(runnable);
+            thread.start();
             
         } catch (IOException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+      
+    }//GEN-LAST:event_formMouseClicked
 
     /**
      * @param args the command line arguments
@@ -204,6 +273,7 @@ public class VOTE extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
