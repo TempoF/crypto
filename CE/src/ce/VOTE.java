@@ -8,13 +8,23 @@ package ce;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import objects.Candidates;
+import objects.Request;
 
 /**
  *
@@ -49,7 +59,6 @@ public class VOTE extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -62,37 +71,22 @@ public class VOTE extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Choose your candidate");
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(167, 167, 167)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(79, 79, 79)
-                                .addComponent(jButton1)))
-                        .addGap(0, 81, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(156, 156, 156)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,19 +97,55 @@ public class VOTE extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addGap(30, 30, 30)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(170, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
     private void getCandidates(){
+        try {
+            Socket sck=new Socket("127.0.0.1",6987);
+            sck.setKeepAlive(true);
+            ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+           ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+
+            SHA256 comd = new SHA256("Candidates"); 
+            
+            Request req=new Request(comd.getSha());
+            System.out.println(req);
+            out.writeObject(req);
+            
+            ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
+            ArrayList<JLabel> labelCont=new ArrayList<JLabel>();
+            
+            jLabel1.setVisible(false);
+            
+            int offsetx=0,offsety=0;
+            for(Candidates candidate: candidates){
+//                offsety=50;
+//                JLabel jl = new JLabel();
+//                jl.setName(candidate.getId());
+//                
+//                this.add(jl);
+//                jl.setText(candidate.getName()+"\n"+candidate.getParty());
+//                jl.setLocation(66+offsetx, 168+offsety);
+//                labelCont.add(jl);
+                System.out.println(candidate.getName());
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        catch (ClassNotFoundException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-    }
+    }   
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
@@ -128,20 +158,15 @@ public class VOTE extends javax.swing.JFrame {
             jLabel4.setIcon(new ImageIcon(icon.getImage().getScaledInstance(169, 67, Image.SCALE_DEFAULT)));
             icon= new ImageIcon(logo2);
             jLabel5.setIcon(new ImageIcon(icon.getImage().getScaledInstance(63, 67, Image.SCALE_DEFAULT)));
-            java.net.URL imageURL = this.getClass().getResource("loading.gif");
-            Icon iconl=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+            java.net.URL imageURL = Paths.get("img/loading.gif").toUri().toURL();;
+            Icon iconl=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(54, 52, Image.SCALE_DEFAULT));
             jLabel1.setIcon(iconl);
-            //udp al MI
-            getCandidates();
+            //tcp al MI
+            
         } catch (IOException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -177,7 +202,6 @@ public class VOTE extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;

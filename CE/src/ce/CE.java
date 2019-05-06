@@ -12,6 +12,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -117,11 +120,11 @@ public class CE extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel7)))
+                        .addComponent(jLabel7))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(169, 169, 169)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -201,7 +204,6 @@ public class CE extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "The Elector key format is not valid.");
                 jTextField1.requestFocus();
                 jTextField1.setText("");
-                return;
             }
         }
     }//GEN-LAST:event_jTextField1KeyPressed
@@ -218,19 +220,20 @@ public class CE extends javax.swing.JFrame {
         this.dispose();
     }
     private void  displayFingerPrintInput(){
-        jLabel3.setVisible(false);
-        jTextField1.setVisible(false);
-        java.net.URL imageURL = this.getClass().getResource("fingerprint.gif");
-        Icon icon=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(116, 96, Image.SCALE_DEFAULT));
-        jLabel6.setIcon(icon);
-        jLabel6.addMouseListener(new MouseAdapter()  
-            {  
+        
+        try {
+            jLabel3.setVisible(false);
+            jTextField1.setVisible(false);
+            URL imageURL = Paths.get("img/fingerprint.gif").toUri().toURL();
+            Icon icon=new ImageIcon(new ImageIcon(imageURL).getImage().getScaledInstance(94, 96, Image.SCALE_DEFAULT));
+            jLabel6.setIcon(icon);
+            jLabel6.addMouseListener(new MouseAdapter()  
+            {
                 @Override
-                public void mouseClicked(MouseEvent e)  
-                {  
-                    ce.SHA256 sha;
+                public void mouseClicked(MouseEvent e)
+                {                   
                     try {
-                        sha = new ce.SHA256("123456789");
+                        SHA256 sha = new SHA256("123456789");
                         ce.VOTE go=new ce.VOTE(sha.getSha());
                         go.setVisible(true);
                         
@@ -240,11 +243,14 @@ public class CE extends javax.swing.JFrame {
                     
                     closeCE();
                     
-                }  
-            });        
-        jLabel7.setVisible(true);
-        
+                }
+            });
+            jLabel7.setVisible(true);
+            
 //        FDASFD45645645H789
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     /**
      * @param args the command line arguments
