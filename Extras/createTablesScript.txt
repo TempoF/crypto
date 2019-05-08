@@ -1,0 +1,41 @@
+
+**** tabla de votantes ****
+create table voter(
+IDCLHash varchar(32) not null primary key,
+CL varchar(13) not null,
+Name varchar(50),
+LastNameP varchar(30),
+LastNameM varchar(30),
+FingerPrint varchar(50) not null
+);
+
+**** tabla de candidatos ****
+create table candidate(
+IDCandidate varchar(10) not null primary key,
+Name varchar(50) not null,
+LastNameP varchar(30), 
+LastNameM varchar(30),
+ProfileImage varchar(100)
+);
+
+**** tabla de moderator ****
+create table moderator(
+UserName varchar(30) not null primary key,
+Password varchar(30) not null
+);
+
+**** tabla de periodo **** 
+create table period(
+DTstart datetime not null,
+DTend datetime not null
+);
+
+
+-------------------------------------------------------------
+MESA DE VOTOS
+
+**** tabla de votos ****
+create table vote(
+IDV varchar(32) not null primary key,
+Hash varchar(32) not null
+);
