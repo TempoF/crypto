@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -29,9 +30,10 @@ import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
-import objects.Candidates;
-import objects.Request;
+import objects.*;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  *
@@ -132,7 +134,84 @@ public class VOTE extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void vote(MouseEvent e){
-        System.out.println(e.getComponent().getName());
+        System.out.println("\n****************************************************\n");
+        System.out.println("Id del candidato seleccionado: "+ e.getComponent().getName());
+        //Vernam
+        
+       VERNAM coder = new VERNAM();
+       String vprime=coder.getVernam(e.getComponent().getName(),this.fingerprint);
+        System.out.println("Voto enmascarado (V') : "+(vprime));
+        
+        //descifrado
+        String vprimer;
+        VERNAM coder1 = new VERNAM();
+        vprimer=coder1.getVernam(vprime,this.fingerprint);
+        System.out.println("Id del candidato : "+(vprimer));
+        
+        //send 
+        try {
+            Socket sck=new Socket("127.0.0.1",6987);
+                    sck.setKeepAlive(true);
+            ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+            SHA256 comd = new SHA256("Signature");           
+            ArrayList<String> sender =new ArrayList<>();
+            sender.add(vprime);
+            sender.add( (new SHA256(vprime)).getSha() );
+            
+            Request req=new Request(comd.getSha(),sender);
+            
+            out.writeObject(req);
+            
+            ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+            Response resp=(Response)in.readObject();
+            Response reintent=new Response(300,"");
+            if (resp.getCode()==300) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido un error al enviar el voto, "
+                                 + "por favor pide ayuda del moderador mas cercano.");
+                sck.close();
+                return;
+//                int reintents1=0;
+//                
+//                while (reintent.getCode()==300){
+//                    
+//                     if (reintents1>2) {
+//                         JOptionPane.showMessageDialog(this, "Ha ocurrido un error al enviar el voto, "
+//                                 + "por favor pide ayuda del moderador mas cercano.");
+//                        return;
+//                    }
+//                     
+//                    reintents1++;
+//                    
+//                    System.out.println(resp.getMessage());
+//                    
+//                    out.reset();
+//                    out.writeObject(req);
+//                    
+//                    System.out.println("pasa");
+//                    
+//                    reintent=(Response)in.readObject();
+//                    System.out.println("pasaaaaaa");
+//                    
+//                    if (reintent.getCode()==200) {
+//                        resp=reintent;
+//                        break;
+//                    }
+//                }          
+            }
+            //mandamos voto a MV
+            System.out.println("Voto Firmado: "+resp.getMessage());            
+            sck.close();
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        catch (ClassNotFoundException ex) {
+            Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     private void displayCandidates(ArrayList<Candidates> options){
@@ -140,9 +219,12 @@ public class VOTE extends javax.swing.JFrame {
             jLabel1.setVisible(false);
             this.setSize(this.getWidth(), (220+(110*((int) Math.ceil(options.size()/2.0)))));            
             int offsetx=0,offsety=0,i=0;
+            System.out.println("\n****************************************************\n");
+            System.out.println("Recibiendo candidatos:\n Nombre -> Id");
             for(Candidates candidate: options){
                 //jlabels diseño
                 labelCont.add(new JLabel("<html>"+candidate.getName()+"<br>"+candidate.getParty()+"</html>"));
+                System.out.println(candidate.getName()+" -> "+candidate.getId());
                 
                 labelCont.get(i).setName(candidate.getId());
                 labelCont.get(i).setSize(159,100);
@@ -184,15 +266,15 @@ public class VOTE extends javax.swing.JFrame {
     private void getCandidates(){
         try {
             Socket sck=new Socket("127.0.0.1",6987);
-            sck.setKeepAlive(true);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("Candidates"); 
-            Request req=new Request(comd.getSha(),"");
+            
+            Request req=new Request(comd.getSha(),new ArrayList<>());
             out.writeObject(req);
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
             displayCandidates(candidates);
-            
+            sck.close();
             
         } catch (IOException ex) {
             Logger.getLogger(VOTE.class.getName()).log(Level.SEVERE, null, ex);
