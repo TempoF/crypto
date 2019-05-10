@@ -76,6 +76,11 @@ public class AddCandidates extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Votex_white_2.jpg"))); // NOI18N
 
         BtnSave.setText("Save");
+        BtnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,6 +186,10 @@ public class AddCandidates extends javax.swing.JFrame {
     private void Txt_NameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Txt_NameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Txt_NameActionPerformed
+
+    private void BtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSaveActionPerformed
+        
+    }//GEN-LAST:event_BtnSaveActionPerformed
 
     /**
      * @param args the command line arguments

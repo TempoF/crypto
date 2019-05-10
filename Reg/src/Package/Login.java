@@ -4,8 +4,13 @@
  * and open the template in the editor.
  */
 package Package;
+import connectors.connector;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -16,12 +21,25 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Registro
      */
+    
+    private connector conector;
+    private Connection conn;
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.white);
+        connectToDB();
     }
 
+    private void connectToDB(){
+        String dbName = "Mesa_Registro";
+        conector = new connector(dbName);
+        conn = conector.connectBD();
+        if (conn != null)
+            System.out.println("Conectado a " + dbName + " Succesfully");
+        else
+            System.out.println("Error: " + dbName + " Database conection null");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -111,12 +129,29 @@ public class Login extends javax.swing.JFrame {
         
         String user = TxtUser.getText();
         String password = Txt_Password.getText();
-        //Mientras
-        if(user.equals("Daniela") && password.equals("123456")){
-            Datos data = new Datos();
-            data.setVisible(true);
-            this.setVisible(false);
-        }else Msage_Error.setText("Incorrect username or password");
+        
+        String queryMod = "SELECT * FROM moderator WHERE UserName like '" + user + "'";
+        try{
+            //PreparedStatement ps = conn.prepareStatement(query); 
+            Statement s = conn.createStatement();
+            ResultSet rs = s.executeQuery (queryMod);
+            //Se obtiene la información de la tabla
+            //prepareTable(rs);
+            if (rs.next()){
+                System.out.println("Moderator: " + rs.getString("UserName"));
+                System.out.println("Password: " + rs.getString("Password"));
+                Datos data = new Datos();
+                data.setVisible(true);
+                this.setVisible(false);
+            }else{
+                Msage_Error.setText("Incorrect username or password");
+            }
+            
+            System.out.println("Consulta finalizada");
+            
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
         
         
     }//GEN-LAST:event_jButton1ActionPerformed

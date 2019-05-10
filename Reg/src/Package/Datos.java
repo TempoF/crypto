@@ -5,7 +5,11 @@
  */
 package Package;
 
+import connectors.connector;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -16,10 +20,24 @@ public class Datos extends javax.swing.JFrame {
     /**
      * Creates new form Datos
      */
+    private connector conector;
+    private Connection conn;
     public Datos() {
         initComponents();
+        this.setLocationRelativeTo(null);
         jLabel1.setEnabled(true);
         this.getContentPane().setBackground(Color.white);
+        connectToDB();
+    }
+    
+    private void connectToDB(){
+        String dbName = "Mesa_Registro";
+        conector = new connector(dbName);
+        conn = conector.connectBD();
+        if (conn != null)
+            System.out.println("Conected to " + dbName + " Succesfully");
+        else
+            System.out.println("Error: " + dbName + " Database conection null");
     }
 
     /**
@@ -32,16 +50,16 @@ public class Datos extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        TxtName = new javax.swing.JTextField();
+        TXTID = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        TXTName = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        TXTLnp = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        TXTLnm = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
@@ -49,10 +67,10 @@ public class Datos extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/votex.jpg"))); // NOI18N
 
-        TxtName.setText("13 dígitos");
-        TxtName.addActionListener(new java.awt.event.ActionListener() {
+        TXTID.setText("13 dígitos");
+        TXTID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TxtNameActionPerformed(evt);
+                TXTIDActionPerformed(evt);
             }
         });
 
@@ -63,20 +81,20 @@ public class Datos extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre(s):");
 
-        jTextField1.setText("Nombre(s)");
+        TXTName.setText("Nombre(s)");
 
         jLabel5.setText("Apellido Paterno: ");
 
-        jTextField2.setText("Apellido Paterno");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        TXTLnp.setText("Apellido Paterno");
+        TXTLnp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                TXTLnpActionPerformed(evt);
             }
         });
 
         jLabel6.setText("Apellido Materno:");
 
-        jTextField3.setText("Apellido Materno");
+        TXTLnm.setText("Apellido Materno");
 
         jLabel7.setText("¿HUELLA?");
 
@@ -112,10 +130,10 @@ public class Datos extends javax.swing.JFrame {
                                 .addComponent(jLabel6))
                             .addGap(18, 18, 18)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(TxtName)
-                                .addComponent(jTextField1)
-                                .addComponent(jTextField2)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                                .addComponent(TXTID)
+                                .addComponent(TXTName)
+                                .addComponent(TXTLnp)
+                                .addComponent(TXTLnm, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
                             .addGap(18, 18, 18)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -132,19 +150,19 @@ public class Datos extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(TxtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TXTID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TXTName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(TXTLnp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(TXTLnm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -157,21 +175,32 @@ public class Datos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void TxtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNameActionPerformed
+    private void TXTIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXTIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_TxtNameActionPerformed
+    }//GEN-LAST:event_TXTIDActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void TXTLnpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXTLnpActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_TXTLnpActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
-        
-        Login reg = new Login();
+                
+        /*Login reg = new Login();
         reg.setVisible(true);
-        this.setVisible(false);
+        this.setVisible(false);*/
+        String query = "INSERT INTO voter VALUES (?,?,?,?,?,?)";
+        try{
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, "HashMethod");
+            ps.setString(2, this.TXTID.getText());
+            ps.setString(3, this.TXTName.getText());
+            ps.setString(4, this.TXTLnp.getText());
+            ps.setString(5, this.TXTLnm.getText());
+            ps.setString(6, "HuellaDigital"+this.TXTName.getText());
+            ps.executeQuery();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -210,7 +239,10 @@ public class Datos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField TxtName;
+    private javax.swing.JTextField TXTID;
+    private javax.swing.JTextField TXTLnm;
+    private javax.swing.JTextField TXTLnp;
+    private javax.swing.JTextField TXTName;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -220,8 +252,5 @@ public class Datos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
