@@ -6,19 +6,19 @@
 package Package;
 
 import java.awt.Color;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author Daniela
  */
-public class Registro extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame {
 
     /**
      * Creates new form Registro
      */
-    public Registro() {
+    public Login() {
         initComponents();
+        setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.white);
     }
 
@@ -33,29 +33,22 @@ public class Registro extends javax.swing.JFrame {
 
         ImgLog = new javax.swing.JLabel();
         TxtUser = new javax.swing.JTextField();
-        TxtPassword = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         Msage_Error = new javax.swing.JLabel();
+        Txt_Password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setForeground(java.awt.Color.white);
         setResizable(false);
 
-        ImgLog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/ImgLog2.png"))); // NOI18N
+        ImgLog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Login_Img.png"))); // NOI18N
 
         TxtUser.setToolTipText("");
         TxtUser.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Username:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Kalinga", 1, 14))); // NOI18N
         TxtUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TxtUserActionPerformed(evt);
-            }
-        });
-
-        TxtPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Password:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Kalinga", 1, 14))); // NOI18N
-        TxtPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TxtPasswordActionPerformed(evt);
             }
         });
 
@@ -71,42 +64,40 @@ public class Registro extends javax.swing.JFrame {
         Msage_Error.setForeground(new java.awt.Color(255, 0, 0));
         Msage_Error.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        Txt_Password.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Password:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Kalinga", 1, 14))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButton1)
+                        .addComponent(ImgLog)
+                        .addComponent(Msage_Error, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(Msage_Error, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(TxtUser)
-                                    .addComponent(TxtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButton1)
-                                .addComponent(ImgLog)))))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(TxtUser, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                            .addComponent(Txt_Password))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addComponent(ImgLog)
-                .addGap(11, 11, 11)
-                .addComponent(Msage_Error, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Msage_Error, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TxtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TxtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Txt_Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap())
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -116,14 +107,10 @@ public class Registro extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtUserActionPerformed
 
-    private void TxtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TxtPasswordActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         String user = TxtUser.getText();
-        String password = TxtPassword.getText();
+        String password = Txt_Password.getText();
         //Mientras
         if(user.equals("Daniela") && password.equals("123456")){
             Datos data = new Datos();
@@ -151,20 +138,21 @@ public class Registro extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Registro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Registro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Registro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Registro.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Registro().setVisible(true);
+                new Login().setVisible(true);
                 
             }
         });
@@ -173,8 +161,8 @@ public class Registro extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ImgLog;
     private javax.swing.JLabel Msage_Error;
-    private javax.swing.JTextField TxtPassword;
     private javax.swing.JTextField TxtUser;
+    private javax.swing.JPasswordField Txt_Password;
     private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }

@@ -169,7 +169,7 @@ public class Datos extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         
-        Registro reg = new Registro();
+        Login reg = new Login();
         reg.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
