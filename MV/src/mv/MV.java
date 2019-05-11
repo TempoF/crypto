@@ -94,7 +94,7 @@ public class MV {
                      return 1;
                  }
 
-            } catch (IOException | ClassNotFoundException | NoSuchAlgorithmException ex) {
+            } catch (IOException | ClassNotFoundException | NoSuchAlgorithmException | NullPointerException ex) {
                 try {
                     sck.close();
                 } catch (Exception ex1) {
@@ -145,23 +145,41 @@ public class MV {
                     System.out.println("\n****************************************************\n");
                     System.out.println("Recibiendo Voto Firmado");
                     
-                    if (!new SHA256(msg.get(0)).getSha().equals(msg.get(1))) {
-                        System.out.println("Integridad comprometida volver a intentar.");
-                        Response resp=new Response(300,"Integridad comprometida");
-                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                        out.writeObject(resp);
-                    }else{                 
+//                    if (!new SHA256(msg.get(0)).getSha().equals(msg.get(1))) {
+//                        System.out.println("Integridad comprometida volver a intentar.");
+//                        Response resp=new Response(300,"Integridad comprometida");
+//                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+//                        out.writeObject(resp);
+//                    }else{                 
                         
-                            Security.addProvider(new BouncyCastleProvider());                            
-                            Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
-                            ecdsaSign.initSign(pair.getPrivate());
+                            Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
+                            ecdsaVerify.initVerify(MIPublic);
+                            System.out.println("Voto Firmado: "+msg.get(1));
+                            System.out.println("V' :"+msg.get(0));
+                            System.out.println("HE :"+msg.get(2));
+                            byte[] signature=Hex.decode(msg.get(1));
                             
-                            ecdsaSign.update(msg.get(0).getBytes("UTF-8"));
-                            byte[] signature = ecdsaSign.sign();
-                            Response resp=new Response(200,new String(Hex.encode(signature)));
-                            ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                            out.writeObject(resp); 
-                    }
+                            ecdsaVerify.update(msg.get(0).getBytes("UTF-8"));
+                            
+                            boolean result = ecdsaVerify.verify(signature);
+                            if (result) {
+                                System.out.println("Origen del voto confirmado");
+                                Response resp=new Response(200,"Origen del voto confirmado");
+                                //sql salvar v' y he
+                                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                                out.writeObject(resp);
+                            } else {
+                                System.out.println("Origen del voto desconocido. Voto anulado");
+                                Response resp=new Response(300,"Origen del voto desconocido. Voto anulado");
+                                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                                out.writeObject(resp);
+                            
+                            }
+                            
+//                            Response resp=new Response(200,new String(Hex.encode(signature)));
+//                            ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+//                            out.writeObject(resp); 
+//                    }
                      
             }
         } 

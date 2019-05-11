@@ -96,7 +96,7 @@ public class MI {
             } catch (IOException | ClassNotFoundException | NoSuchAlgorithmException ex) {
                 try {
                     sck.close();
-                } catch (IOException ex1) {
+                } catch (IOException | NullPointerException ex1) {
                   
                 }
             }
@@ -169,6 +169,7 @@ public class MI {
                     System.out.println("Recibiendo V' y H(V')");
                     System.out.println("V' : "+msg.get(0));
                     System.out.println("H(V') : "+msg.get(1));
+                    
                     if (!new SHA256(msg.get(0)).getSha().equals(msg.get(1))) {
                         System.out.println("Integridad comprometida volver a intentar.");
                         Response resp=new Response(300,"Integridad comprometida");
@@ -177,18 +178,19 @@ public class MI {
                     }else{
                          try {                   
                             Security.addProvider(new BouncyCastleProvider());
-                            KeyPair pair = generateKeys();
                             Signature ecdsaSign = Signature.getInstance("SHA256withECDSA", "BC");
                             ecdsaSign.initSign(pair.getPrivate());
                             ecdsaSign.update(msg.get(0).getBytes("UTF-8"));
                             
                             byte[] signature = ecdsaSign.sign();
+                             System.out.println("Voto Firmado: "+new String(Hex.encode(signature)));
                             Response resp=new Response(200,new String(Hex.encode(signature)));
+                            
                             ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
                             out.writeObject(resp);
 
 
-                        } catch (NoSuchProviderException | InvalidKeyException | SignatureException | InvalidAlgorithmParameterException ex) {
+                        } catch (NoSuchProviderException | InvalidKeyException | SignatureException ex) {
                             Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
                         }    
                     }
