@@ -8,6 +8,7 @@ package objects;
 import java.awt.Image;
 import java.io.Serializable;
 
+
 /**
  *
  * @author Tempori
