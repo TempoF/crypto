@@ -30,8 +30,7 @@ import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import objects.Candidates;
-import objects.Request;
-import objects.Response;
+import objects.*;
 
 /**
  *
@@ -209,7 +208,7 @@ public class CE extends javax.swing.JFrame {
                 try {
                     ce.SHA256 sha=new ce.SHA256(ceText);
                     this.cel=sha.getSha();
-                    System.out.println(this.cel);
+                    System.out.println("Hash de clave de elector H(CEL):"+this.cel);
                     jTextField1.setText("");
                 } catch (NoSuchAlgorithmException ex) {
                     jTextField1.setText("");
@@ -245,8 +244,10 @@ public class CE extends javax.swing.JFrame {
             
             SHA256 comd = new SHA256("Verify"); 
             SHA256 vstring=new SHA256(this.cel+fingerprint);
+            ArrayList<String> sender = new ArrayList<String>();
+            sender.add(vstring.getSha());
             
-            Request req=new Request(comd.getSha(),vstring.getSha());
+            Request req=new Request(comd.getSha(),sender);
             out.writeObject(req);
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             Response response=(Response)in.readObject();
@@ -291,6 +292,7 @@ public class CE extends javax.swing.JFrame {
                     try {
                         SHA256 sha = new SHA256("123456789");            
                         validate(sha.getSha());
+                        System.out.println("Hash huella digital H(HD): "+sha.getSha());
 //                      closeCE();
                     } catch (NoSuchAlgorithmException ex) {
                         Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,4 +1,5 @@
-
+DATABASE Mesa_Registro
+create database Mesa_Registro;
 **** tabla de votantes ****
 create table voter(
 IDCLHash varchar(32) not null primary key,
@@ -32,8 +33,8 @@ DTend datetime not null
 
 
 -------------------------------------------------------------
-MESA DE VOTOS
-
+DATABASE Mesa_Voto
+create table Mesa_Voto;
 **** tabla de votos ****
 create table vote(
 IDV varchar(32) not null primary key,

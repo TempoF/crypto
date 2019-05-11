@@ -188,7 +188,11 @@
         <Property name="text" type="java.lang.String" value="Search Imagen"/>
       </Properties>
       <Events>
+<<<<<<< HEAD:Reg/src/Package/Add.form
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_SearchImgActionPerformed"/>
+=======
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnSaveActionPerformed"/>
+>>>>>>> 27512119f1a158f6b14b02dd981ffe98aa1656f9:Reg/src/Package/AddCandidates.form
       </Events>
     </Component>
   </SubComponents>

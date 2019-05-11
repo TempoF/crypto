@@ -6,6 +6,7 @@
 package objects;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,9 +14,9 @@ import java.io.Serializable;
  */
 public class Request implements Serializable {
     private String request;
-    private String message;
+    private ArrayList<String> message;
     
-    public Request(String HashCommand,String message){
+    public Request(String HashCommand,ArrayList<String> message){
         this.request=HashCommand;
         this.message=message;
     }
@@ -23,7 +24,7 @@ public class Request implements Serializable {
     public String getRequest(){
         return this.request;
     }
-    public String getMessage(){
+    public ArrayList<String> getMessage(){
         return this.message;
     }
 }
