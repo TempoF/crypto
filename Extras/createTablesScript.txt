@@ -3,21 +3,22 @@ create database Mesa_Registro;
 **** tabla de votantes ****
 
 create table voter(
-IDCLHash varchar(32) not null primary key,
-CL varchar(13) not null,
+IDCLHash varchar(65) not null primary key,
+CL varchar(20) not null,
 Name varchar(50),
 LastNameP varchar(30),
 LastNameM varchar(30),
-FingerPrint varchar(50) not null,
+FingerPrint varchar(100) not null,
 Vote boolean not null default false
 );
 
 **** tabla de candidatos ****
 create table candidate(
-IDCandidate varchar(10) not null primary key,
+IDCandidate varchar(65) not null primary key,
 Name varchar(50) not null,
 LastNameP varchar(30), 
 LastNameM varchar(30),
+party varchar(100),
 ProfileImage varchar(100)
 );
 
