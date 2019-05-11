@@ -11,19 +11,20 @@ import java.io.Serializable;
  *
  * @author Tempori
  */
-public class Request implements Serializable {
-    private String request;
-    private Object message;
+public class Response implements Serializable{
+    String message;
+    int code;
     
-    public Request(String HashCommand,Object message){
-        this.request=HashCommand;
+    public Response(int code, String message){
         this.message=message;
+        this.code=code;
     }
     
-    public String getRequest(){
-        return this.request;
+    public int getCode(){
+        return this.code;
     }
-    public Object getMessage(){
+    
+    public String getMessage(){
         return this.message;
     }
 }

@@ -244,10 +244,10 @@ public class CE extends javax.swing.JFrame {
             
             SHA256 comd = new SHA256("Verify"); 
             SHA256 vstring=new SHA256(this.cel+fingerprint);
-            ArrayList<String> sender = new ArrayList<String>();
+            ArrayList<String> sender = new ArrayList<>();
             sender.add(vstring.getSha());
             
-            Request req=new Request(comd.getSha(),sender);
+            Request req=new Request(comd.getSha(),(Object)sender);
             out.writeObject(req);
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             Response response=(Response)in.readObject();

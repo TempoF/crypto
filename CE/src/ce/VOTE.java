@@ -151,7 +151,6 @@ public class VOTE extends javax.swing.JFrame {
         //send 
         try {
             Socket sck=new Socket("127.0.0.1",6987);
-                    sck.setKeepAlive(true);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("Signature");           
             ArrayList<String> sender =new ArrayList<>();
@@ -164,42 +163,22 @@ public class VOTE extends javax.swing.JFrame {
             
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             Response resp=(Response)in.readObject();
-            Response reintent=new Response(300,"");
             if (resp.getCode()==300) {
                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error al enviar el voto, "
                                  + "por favor pide ayuda del moderador mas cercano.");
                 sck.close();
-                return;
-//                int reintents1=0;
-//                
-//                while (reintent.getCode()==300){
-//                    
-//                     if (reintents1>2) {
-//                         JOptionPane.showMessageDialog(this, "Ha ocurrido un error al enviar el voto, "
-//                                 + "por favor pide ayuda del moderador mas cercano.");
-//                        return;
-//                    }
-//                     
-//                    reintents1++;
-//                    
-//                    System.out.println(resp.getMessage());
-//                    
-//                    out.reset();
-//                    out.writeObject(req);
-//                    
-//                    System.out.println("pasa");
-//                    
-//                    reintent=(Response)in.readObject();
-//                    System.out.println("pasaaaaaa");
-//                    
-//                    if (reintent.getCode()==200) {
-//                        resp=reintent;
-//                        break;
-//                    }
-//                }          
-            }
+                return;        
+            }            
+            System.out.println("Voto Firmado: "+resp.getMessage()); 
+            
             //mandamos voto a MV
-            System.out.println("Voto Firmado: "+resp.getMessage());            
+            sck=new Socket("127.0.0.1",6988);
+            out=new ObjectOutputStream(sck.getOutputStream());
+            comd = new SHA256("");           
+            sender =new ArrayList<>();
+            sender.add(vprime);
+            sender.add( (new SHA256(vprime)).getSha() );            
+            req=new Request(comd.getSha(),sender);  
             sck.close();
             
             
@@ -269,7 +248,7 @@ public class VOTE extends javax.swing.JFrame {
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("Candidates"); 
             
-            Request req=new Request(comd.getSha(),new ArrayList<>());
+            Request req=new Request(comd.getSha(),(Object)new ArrayList<>());
             out.writeObject(req);
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
