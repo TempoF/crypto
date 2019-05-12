@@ -1,6 +1,12 @@
-DATABASE Mesa_Registro
+
+##DATABASE Mesa_Registro
+
+
 create database Mesa_Registro;
-**** tabla de votantes ****
+
+use Mesa_Registro;
+
+## tabla de votantes ##
 
 create table voter(
 IDCLHash varchar(65) not null primary key,
@@ -12,7 +18,7 @@ FingerPrint varchar(100) not null,
 Vote boolean not null default false
 );
 
-**** tabla de candidatos ****
+## tabla de candidatos ##
 create table candidate(
 IDCandidate varchar(65) not null primary key,
 Name varchar(50) not null,
@@ -22,13 +28,17 @@ party varchar(100),
 ProfileImage varchar(100)
 );
 
-**** tabla de moderator ****
+## tabla de moderator ##
 create table moderator(
 UserName varchar(30) not null primary key,
-Password varchar(30) not null
+Password varchar(32) not null
 );
 
-**** tabla de periodo **** 
+##* registro de moderador propuesto
+
+insert into moderator values('admin',MD5('contraseña'));
+
+## tabla de periodo ## 
 create table period(
 DTstart datetime not null,
 DTend datetime not null
@@ -36,10 +46,148 @@ DTend datetime not null
 
 
 -------------------------------------------------------------
-DATABASE Mesa_Voto
-create table Mesa_Voto;
-**** tabla de votos ****
+##DATABASE Mesa_Voto
+
+create database Mesa_Voto;
+
+use Mesa_Voto;
+
+## tabla de votos ##
 create table vote(
-IDV varchar(32) not null primary key,
-Hash varchar(32) not null
+IDV varchar(65) not null primary key,
+Hash varchar(65) not null
 );
+
+
+##-------------------------------------------------------
+
+##STORE PROCEDURES mesa de registro
+
+use Mesa_Registro;
+
+##* Registra a los votantes
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_insert_voter`(IN `id` VARCHAR(65), IN `cl` VARCHAR(20), IN `name` varchar(50), IN `lastp` varchar(30), IN `lastm` varchar(30), IN `finger` varchar(100))
+BEGIN
+	Insert Into voter values(id, cl, name, lastp, lastm, finger, false);
+END$$
+DELIMITER ;
+
+
+## Login del admin
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_Check_admin_login`(IN `userN` VARCHAR(30),  IN `pass` VARCHAR(32))
+BEGIN
+    DECLARE CheckExists int;
+    SET CheckExists = 0; 
+	select count(*) INTO CheckExists from moderator where UserName = userN and Password =MD5(pass);
+	IF(CheckExists > 0) THEN 
+        SELECT true AS result, 'Login correcto' as message;  
+    ELSE 
+       SELECT false AS result, 'Login incorrecto' as message;   
+    END IF ;
+
+
+	
+END$$
+DELIMITER ;
+
+##  Registra a los candidatos
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_insert_candidate`(IN `id` VARCHAR(65), IN `name` VARCHAR(50), IN `lastp` varchar(30), IN `lastm` varchar(30), IN `party` varchar(100), IN `photo` varchar(100))
+BEGIN
+	Insert Into voter values(id, name, lastp, lastm, party, photo);
+END$$
+DELIMITER ;
+
+
+## Reinicia la base de datos para nueva votacion
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_prepare_votation`()
+BEGIN
+    delete from voter;
+    delete from candidate;
+    delete from period;
+
+END$$
+DELIMITER ;
+
+
+
+##Verifica que el usuario se encuentre en el padron y pueda votar
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_Check_login`(IN `hash` VARCHAR(65))
+BEGIN
+	
+	DECLARE period int;
+	SET period=0;
+	select count(*) into period from period where DTend > now();
+
+	IF(period > 0) THEN
+    BEGIN
+        DECLARE CheckExists int;
+	    SET CheckExists = 0; 
+		select count(*) INTO CheckExists from voter where IDCLHash = hash and Vote =false;
+		IF(CheckExists > 0) THEN 
+	        SELECT true AS result, 'Correcto' as message;  
+	    ELSE 
+	       SELECT false AS result,  'El votante no se ha registrado en el padrón' as message;   
+	    END IF ;
+	END;
+    ELSE 
+       SELECT false AS result, 'El periodo de votacion ha caducado' as message; 
+    END IF ;
+
+
+	
+END$$
+DELIMITER ;
+
+##se manda a llamar 
+
+##call USP_Check_Login('h(cel+hd)');
+
+##llama a los candidatos
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_Get_Candidates`()
+BEGIN
+	DECLARE period int;
+	SET period=0;
+	select count(*) into period from period where DTend > now();
+
+	IF(period > 0) THEN
+        Select true as result, '' as message, candidate.* from candidate;
+    ELSE 
+       SELECT false as result, 'El periodo de votacion ha caducado' as message; 
+    END IF ;
+	
+END$$
+DELIMITER ;
+
+###se manda a llamar
+##call USP_Get_Candidates;
+
+
+###STORE PROCEDURES mesa de voto
+
+use Mesa_Voto;
+
+
+## inserta el voto en la tabla
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_Vote`(IN `vote` VARCHAR(65), IN `hash` VARCHAR(65))
+BEGIN
+	
+	Insert Into vote values(vote,hash);
+	SELECT true as result, '' as message; 
+
+	
+END$$
+DELIMITER ;

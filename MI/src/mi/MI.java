@@ -153,10 +153,10 @@ public class MI {
             System.out.println("\n****************************************************\n");
                 System.out.println("Envio de candidatos");
                 ArrayList<Candidates> candidates=new ArrayList<>();
-                candidates.add(new Candidates("Candidato 1","PRN",(new SHA256("Candidato 1")).getSha()));
-                candidates.add(new Candidates("Candidato 2","PRN",(new SHA256("Candidato 2")).getSha()));
-                candidates.add(new Candidates("Candidato 3","PRN",(new SHA256("Candidato 3")).getSha()));
-                candidates.add(new Candidates("Candidato 4","PRN",(new SHA256("Candidato 4")).getSha()));
+//                candidates.add(new Candidates("Candidato 1","PRN",(new SHA256("Candidato 1")).getSha()));
+//                candidates.add(new Candidates("Candidato 2","PRN",(new SHA256("Candidato 2")).getSha()));
+//                candidates.add(new Candidates("Candidato 3","PRN",(new SHA256("Candidato 3")).getSha()));
+//                candidates.add(new Candidates("Candidato 4","PRN",(new SHA256("Candidato 4")).getSha()));
 
 
                 ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
