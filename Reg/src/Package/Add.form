@@ -87,7 +87,6 @@
                           <Component id="Btn_SearchImg" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="Btn_Save" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="22" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
@@ -110,9 +109,9 @@
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="TextF_PoliticalParty" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -188,11 +187,8 @@
         <Property name="text" type="java.lang.String" value="Search Imagen"/>
       </Properties>
       <Events>
-<<<<<<< HEAD:Reg/src/Package/Add.form
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_SearchImgActionPerformed"/>
-=======
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnSaveActionPerformed"/>
->>>>>>> 27512119f1a158f6b14b02dd981ffe98aa1656f9:Reg/src/Package/AddCandidates.form
       </Events>
     </Component>
   </SubComponents>

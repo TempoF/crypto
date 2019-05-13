@@ -4,13 +4,22 @@
  * and open the template in the editor.
  */
 package Package;
-import connectors.connector;
 
+import Objects.Request;
+import Objects.Response;
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,24 +31,13 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Registro
      */
     
-    private connector conector;
-    private Connection conn;
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.white);
-        connectToDB();
     }
 
-    private void connectToDB(){
-        String dbName = "Mesa_Registro";
-        conector = new connector(dbName);
-        conn = conector.connectBD();
-        if (conn != null)
-            System.out.println("Conectado a " + dbName + " Succesfully");
-        else
-            System.out.println("Error: " + dbName + " Database conection null");
-    }
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -127,30 +125,65 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        String user = TxtUser.getText();
-        String password = Txt_Password.getText();
-        
-        String queryMod = "SELECT * FROM moderator WHERE UserName like '" + user + "'";
-        try{
-            //PreparedStatement ps = conn.prepareStatement(query); 
-            Statement s = conn.createStatement();
-            ResultSet rs = s.executeQuery (queryMod);
-            //Se obtiene la información de la tabla
-            //prepareTable(rs);
-            if (rs.next()){
-                System.out.println("Moderator: " + rs.getString("UserName"));
-                System.out.println("Password: " + rs.getString("Password"));
-                Datos data = new Datos();
+//        String user = TxtUser.getText();
+//        String password = Txt_Password.getText();
+//        
+//        String queryMod = "SELECT * FROM moderator WHERE UserName like '" + user + "'";
+//        try{
+//            //PreparedStatement ps = conn.prepareStatement(query); 
+//            Statement s = conn.createStatement();
+//            ResultSet rs = s.executeQuery (queryMod);
+//            //Se obtiene la información de la tabla
+//            //prepareTable(rs);
+//            if (rs.next()){
+//                System.out.println("Moderator: " + rs.getString("UserName"));
+//                System.out.println("Password: " + rs.getString("Password"));
+//                Datos data = new Datos();
+//                data.setVisible(true);
+//                this.setVisible(false);
+//            }else{
+//                Msage_Error.setText("Incorrect username or password");
+//            }
+//            
+//            System.out.println("Consulta finalizada");
+//            
+//        }catch(SQLException ex){
+//            ex.printStackTrace();
+//        }
+
+
+    try {
+            Socket sck=new Socket("127.0.0.1",6986);
+            ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+            
+            SHA256 comd = new SHA256("Login"); 
+            ArrayList<String> sender = new ArrayList<>();
+            
+            sender.add(this.TxtUser.getText());
+            sender.add(Arrays.toString(this.Txt_Password.getPassword()));
+            
+            Request req=new Request(comd.getSha(),(Object)sender);
+            out.writeObject(req);
+            ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+            Response response=(Response)in.readObject();
+            
+            if (response.getCode()==200) {
+                MenuAdm data = new MenuAdm();
                 data.setVisible(true);
-                this.setVisible(false);
+                this.dispose();
             }else{
-                Msage_Error.setText("Incorrect username or password");
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
+                this.TxtUser.setText("");
+                this.Txt_Password.setText("");
+                
             }
             
-            System.out.println("Consulta finalizada");
-            
-        }catch(SQLException ex){
-            ex.printStackTrace();
+        } catch (IOException ex) {
+           JOptionPane.showMessageDialog(this, "Ocurrio un error en el login, intentelo de nuevo.");
+        } catch (NoSuchAlgorithmException ex) {
+           JOptionPane.showMessageDialog(this, "Ocurrio un error en el login, llame al tecnico.");
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Ocurrio un error en el login, llame al tecnico.");
         }
         
         

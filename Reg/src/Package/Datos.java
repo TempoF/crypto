@@ -5,11 +5,22 @@
  */
 package Package;
 
-import connectors.connector;
+//import connectors.connector;
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import Objects.*;
 
 /**
  *
@@ -20,25 +31,25 @@ public class Datos extends javax.swing.JFrame {
     /**
      * Creates new form Datos
      */
-    private connector conector;
-    private Connection conn;
+//    private connector conector;
+//    private Connection conn;
     public Datos() {
         initComponents();
         this.setLocationRelativeTo(null);
         jLabel1.setEnabled(true);
         this.getContentPane().setBackground(Color.white);
-        connectToDB();
+//        connectToDB();
     }
     
-    private void connectToDB(){
-        String dbName = "Mesa_Registro";
-        conector = new connector(dbName);
-        conn = conector.connectBD();
-        if (conn != null)
-            System.out.println("Conected to " + dbName + " Succesfully");
-        else
-            System.out.println("Error: " + dbName + " Database conection null");
-    }
+//    private void connectToDB(){
+//        String dbName = "Mesa_Registro";
+//        conector = new connector(dbName);
+//        conn = conector.connectBD();
+//        if (conn != null)
+//            System.out.println("Conected to " + dbName + " Succesfully");
+//        else
+//            System.out.println("Error: " + dbName + " Database conection null");
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,6 +73,8 @@ public class Datos extends javax.swing.JFrame {
         TXTLnm = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,8 +109,6 @@ public class Datos extends javax.swing.JFrame {
 
         TXTLnm.setText("Apellido Materno");
 
-        jLabel7.setText("¿HUELLA?");
-
         jButton1.setText("Guardar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,37 +116,43 @@ public class Datos extends javax.swing.JFrame {
             }
         });
 
+        jPasswordField1.setText("jPasswordField1");
+
+        jLabel8.setText("Palabra secreta:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(124, 124, 124)
-                            .addComponent(jLabel2))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(26, 26, 26)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel1)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGap(36, 36, 36)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel6))
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(TXTID)
-                                .addComponent(TXTName)
-                                .addComponent(TXTLnp)
-                                .addComponent(TXTLnm, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addComponent(jLabel2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel8))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPasswordField1)
+                            .addComponent(TXTID)
+                            .addComponent(TXTName)
+                            .addComponent(TXTLnp)
+                            .addComponent(TXTLnm, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -168,7 +185,11 @@ public class Datos extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -188,19 +209,64 @@ public class Datos extends javax.swing.JFrame {
         /*Login reg = new Login();
         reg.setVisible(true);
         this.setVisible(false);*/
-        String query = "INSERT INTO voter VALUES (?,?,?,?,?,?)";
-        try{
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, "HashMethod");
-            ps.setString(2, this.TXTID.getText());
-            ps.setString(3, this.TXTName.getText());
-            ps.setString(4, this.TXTLnp.getText());
-            ps.setString(5, this.TXTLnm.getText());
-            ps.setString(6, "HuellaDigital"+this.TXTName.getText());
-            ps.executeQuery();
-        }catch(SQLException e){
-            e.printStackTrace();
+//        String query = "INSERT INTO voter VALUES (?,?,?,?,?,?)";
+//        try{
+////            PreparedStatement ps = conn.prepareStatement(query);
+//            ps.setString(1, "HashMethod");
+//            ps.setString(2, this.TXTID.getText());
+//            ps.setString(3, this.TXTName.getText());
+//            ps.setString(4, this.TXTLnp.getText());
+//            ps.setString(5, this.TXTLnm.getText());
+//            ps.setString(6, "HuellaDigital"+this.TXTName.getText());
+//            ps.executeQuery();
+//        }catch(SQLException e){
+//            e.printStackTrace();
+//        }
+        try {
+            Socket sck=new Socket("127.0.0.1",6986);
+            ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+            
+            SHA256 comd = new SHA256("Registry"); 
+            SHA256 pass=new SHA256(Arrays.toString(this.jPasswordField1.getPassword()));
+            ArrayList<String> sender = new ArrayList<>();
+            
+            sender.add(this.TXTID.getText());
+            sender.add(this.TXTName.getText());
+            sender.add(this.TXTLnp.getText());
+            sender.add(this.TXTLnm.getText());
+            sender.add(pass.getSha());
+            
+            Request req=new Request(comd.getSha(),(Object)sender);
+            out.writeObject(req);
+            ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+            Response response=(Response)in.readObject();
+            if (response.getCode()==200) {
+                //registro correcto
+                JOptionPane.showMessageDialog(this, "Registro correcto.");
+                this.TXTID.setText("");
+                this.TXTName.setText("");
+                this.TXTLnp.setText("");
+                this.TXTLnm.setText("");
+                this.jPasswordField1.setText("");
+            }else{
+                JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+                this.TXTID.setText("");
+                this.TXTName.setText("");
+                this.TXTLnp.setText("");
+                this.TXTLnm.setText("");
+                this.jPasswordField1.setText("");
+                
+            }
+            
+        } catch (IOException ex) {
+           JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+        } catch (NoSuchAlgorithmException ex) {
+           JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
         }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -251,6 +317,8 @@ public class Datos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

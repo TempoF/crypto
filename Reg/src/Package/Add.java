@@ -4,16 +4,29 @@ import Objects.Candidates;
 import Objects.IdCandidate;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import Objects.Request;
+import Objects.Response;
+import org.bouncycastle.util.encoders.Hex;
 
 public class Add extends javax.swing.JFrame {
     ArrayList<Candidates> candidates=new ArrayList<>();
-    String imagen;
+    String imgSender;
     int NumCandidates;
     public Add() {
         initComponents();
@@ -126,8 +139,7 @@ public class Add extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Btn_SearchImg)
-                            .addComponent(Btn_Save))
-                        .addContainerGap(22, Short.MAX_VALUE))
+                            .addComponent(Btn_Save)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -144,55 +156,128 @@ public class Add extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(TextF_PoliticalParty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(TextF_PoliticalParty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void Btn_SearchImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SearchImgActionPerformed
-        JFileChooser select = new JFileChooser();
-        File fichero;
+       JFileChooser fl=new JFileChooser();
+        int result= fl.showOpenDialog(this);
+        if (result == JFileChooser.CANCEL_OPTION) {
+            return;
+        }
+        File fll=fl.getSelectedFile();
+        String imagen=fll.getAbsolutePath();
+        String ext="";
+        int i = imagen.lastIndexOf('.');
+        if (i >= 0) {
+            ext = imagen.substring(i+1);
+        }
         
-        int OPT = 0;
-                while (OPT == 0){
-                        FileNameExtensionFilter filtro = new FileNameExtensionFilter(".jpg, .bmp, .png & .gif","jpg","bmp","png","gif");
-                        select.setFileFilter(filtro);
-                        if(select.showDialog(null,"Open File") == JFileChooser.APPROVE_OPTION){
-                                fichero = select.getSelectedFile();
-                                imagen = fichero.getName();
-                                Image img = new ImageIcon(select.getSelectedFile().getPath()).getImage();
-                                ImageIcon img2 = new ImageIcon(img.getScaledInstance(160, 160, Image.SCALE_AREA_AVERAGING));
-                                Lbl_Imagen.setIcon(img2);
-                                OPT = 1;
-                            }else JOptionPane.showMessageDialog(null,"Please select Imagen (>ω< *)");
-                    }
-                Btn_Save.setEnabled(true);
+        imgSender=imgPrepare(imagen,ext);
+        
+        BufferedImage img = null;
+        File f = null;
+        try
+        {
+            f = new File(imagen);
+            img = ImageIO.read(f);
+        }
+        catch(IOException e)
+        {
+            System.out.println(e);
+        }
+        
+        ImageIcon imgi=new ImageIcon(img);
+        Lbl_Imagen.setIcon(new ImageIcon(imgi.getImage().getScaledInstance(160, 160, Image.SCALE_DEFAULT)));
+       
+        Btn_Save.setEnabled(true);
     }//GEN-LAST:event_Btn_SearchImgActionPerformed
 
+   private String imgPrepare(String dir, String ext){
+       try{
+        BufferedImage image = ImageIO.read(new File(dir));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, ext, baos);
+        byte[] res=baos.toByteArray();
+        return new String(Hex.encode(baos.toByteArray()));
+        
+        }catch(Exception e) {
+             e.printStackTrace();
+             return "";
+        }
+   }
     private void Btn_SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SaveActionPerformed
         String ID;
         String Name;
         String N,AP,AM;
         String PoliticParty;
-        String Img;
         
         N = TextF_Name.getText();
         AP = TextF_1rstSurname.getText();
         AM = TextF_2ndSurname.getText();
         PoliticParty = TextF_PoliticalParty.getText();
-        Img = imagen;
         ID = IdCandidate.getID();
-       
-        if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && Img != null){
-            JOptionPane.showMessageDialog(null, "Agregar Candidato");
-            Name = TextF_Name.getText()+" "+TextF_1rstSurname.getText()+" "+TextF_2ndSurname.getText();
-            //Meter a la Lista
-            //candidates.add(new Candidates(Name,PoliticParty,ID));
-            NumCandidates++;
-            Btn_Save.setEnabled(false);
-        }else JOptionPane.showMessageDialog(null, "All fields are required");
+        if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && !imgSender.equals("")){
+            try {
+                Socket sck=new Socket("127.0.0.1",6986);
+                ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+
+                SHA256 comd = new SHA256("RegistryCandidates"); 
+                Candidates sender = new Candidates(N+"--"+AP+"--"+AM,PoliticParty,ID);                
+                sender.setImage(imgSender);
+               
+                Request req=new Request(comd.getSha(),(Object)sender);
+                out.writeObject(req);
+                ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+                Response response=(Response)in.readObject();
+                if (response.getCode()==200) {
+                    //registro correcto
+                    JOptionPane.showMessageDialog(this, "Registro correcto.");
+                    this.TextF_Name.setText("");
+                    this.TextF_1rstSurname.setText("");
+                    this.TextF_2ndSurname.setText("");
+                    this.TextF_PoliticalParty.setText("");
+                    Lbl_Imagen.setIcon(null);
+                    Lbl_Imagen.revalidate();
+                     imgSender="";
+                }else{
+                    JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+                    this.TextF_Name.setText("");
+                    this.TextF_1rstSurname.setText("");
+                    this.TextF_2ndSurname.setText("");
+                    this.TextF_PoliticalParty.setText("");
+                    Lbl_Imagen.setIcon(null);
+                    Lbl_Imagen.revalidate();
+                    imgSender="";
+
+                }
+                sck.close();
+            } catch (IOException ex) {
+               JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+            } catch (NoSuchAlgorithmException ex) {
+               JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+            } catch (ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+            }
+            
+            
+            
+            
+        }else{
+            TextF_Name.setText("");
+            TextF_1rstSurname.setText("");
+            TextF_2ndSurname.setText("");
+            TextF_PoliticalParty.setText("");
+            ID="";
+            imgSender="";
+            Lbl_Imagen.setIcon(null);
+            Lbl_Imagen.revalidate();
+            JOptionPane.showMessageDialog(null, "Todos los campos son requeridos.");
+        }
         
     }//GEN-LAST:event_Btn_SaveActionPerformed
 

@@ -138,7 +138,51 @@ public class MI {
             
             String request=req.getRequest();
             
-            if((new SHA256("Verify")).getSha().equals(request)){
+            if((new SHA256("Horarios")).getSha().equals(request)){
+                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                
+                //db query
+                
+                Response resp=new Response(200,"Valido");
+                
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                
+                out.writeObject(resp);
+                
+            }else if((new SHA256("Login")).getSha().equals(request)){
+                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                
+                //db query
+                
+                Response resp=new Response(200,"Valido");
+                
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                
+                out.writeObject(resp);
+                
+            }else if((new SHA256("RegistryCandidate")).getSha().equals(request)){
+                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                
+                //db query
+                
+                Response resp=new Response(200,"Valido");
+                
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                
+                out.writeObject(resp);
+                
+            }else if((new SHA256("Registry")).getSha().equals(request)){
+                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                
+                //db query
+                
+                Response resp=new Response(200,"Valido");
+                
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                
+                out.writeObject(resp);
+                
+            }else if((new SHA256("Verify")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                 System.out.println("Se recibe H(CEL+HD): "+msg.get(0));
                 //db query

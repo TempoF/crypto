@@ -239,7 +239,6 @@ public class CE extends javax.swing.JFrame {
     private void validate(String fingerprint){
         try {
             Socket sck=new Socket("127.0.0.1",6986);
-            sck.setKeepAlive(true);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Verify"); 

@@ -133,7 +133,6 @@ public class SetDate extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton2)
                                 .addGap(150, 150, 150)))
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
@@ -186,15 +185,20 @@ public class SetDate extends javax.swing.JFrame {
                             .addComponent(jLabel7)
                             .addComponent(EndMinute, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Btn_SaveHour)
-                    .addComponent(jButton2))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2)
+                    .addComponent(Btn_SaveHour))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private String datePrepare(String Date){
+        String[] dt=Date.split("/");
+        return dt[2]+"-"+dt[1]+"-"+dt[0];
+    }
+    
     private void Btn_SaveHourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SaveHourActionPerformed
     //OBTENEMOS EL LA FECHA DE INICIO
     String formato = JDC_StartDate.getDateFormatString();
@@ -221,7 +225,9 @@ public class SetDate extends javax.swing.JFrame {
     
     System.out.println(endDate);
     System.out.println(endHour);
-    
+    String init=datePrepare(initdate)+" "+initHour;
+    String end=datePrepare(endDate)+" "+endHour;
+        System.out.println(init+" - "+end);
     Btn_SaveHour.setEnabled(false);
 //Creamos la hora con formato del api Java
 //        try {
@@ -238,7 +244,7 @@ public class SetDate extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         MenuAdm menu = new MenuAdm();
         menu.setVisible(true);
-        this.setVisible(false);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

@@ -8,14 +8,13 @@ package objects;
 import java.awt.Image;
 import java.io.Serializable;
 
-
 /**
  *
  * @author Tempori
  */
 public class Candidates implements Serializable {
     private String name;
-    private Image photo;
+    private String photo;
     private String party;
     private String id;
     
@@ -25,7 +24,7 @@ public class Candidates implements Serializable {
         this.id=id;
     }
     
-    public void setImage(Image photo){
+    public void setImage(String photo){
         this.photo=photo;
     }
     
@@ -38,7 +37,7 @@ public class Candidates implements Serializable {
     public String getId(){
         return id;
     }
-    public Image getImage(){
+    public String getImage(){
         return photo;
     }
     
