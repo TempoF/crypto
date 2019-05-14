@@ -31,6 +31,7 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Registro
      */
     
+    String MID="127.0.0.1";
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
@@ -153,7 +154,7 @@ public class Login extends javax.swing.JFrame {
 
 
     try {
-            Socket sck=new Socket("127.0.0.1",6986);
+            Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Login"); 

@@ -45,6 +45,8 @@ public class VOTE extends javax.swing.JFrame {
      * Creates new form VOTE
      */
     private String fingerprint;
+    String MID="127.0.0.1";
+    String MVD="127.0.0.1";
     public VOTE(String fingerprint) {
         this.fingerprint=fingerprint;
         initComponents();
@@ -99,20 +101,19 @@ public class VOTE extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(198, 198, 198)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 52, Short.MAX_VALUE))
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 76, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(163, 163, 163)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,7 +126,7 @@ public class VOTE extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -150,7 +151,7 @@ public class VOTE extends javax.swing.JFrame {
         
         //send 
         try {
-            Socket sck=new Socket("127.0.0.1",6986);
+            Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("Signature");           
             ArrayList<String> sender =new ArrayList<>();
@@ -173,7 +174,7 @@ public class VOTE extends javax.swing.JFrame {
             System.out.println("Voto Firmado: "+vf); 
             
             //mandamos voto a MV
-            sck=new Socket("127.0.0.1",6987);
+            sck=new Socket(MVD,6987);
             out=new ObjectOutputStream(sck.getOutputStream());
             comd = new SHA256("Signature");           
             sender =new ArrayList<>();
@@ -217,29 +218,30 @@ public class VOTE extends javax.swing.JFrame {
     private void displayCandidates(ArrayList<Candidates> options){
             ArrayList<JLabel> labelCont=new ArrayList<>();
             jLabel1.setVisible(false);
-            this.setSize(this.getWidth(), (220+(110*((int) Math.ceil(options.size()/2.0)))));            
+            this.setSize(this.getWidth(), (220+(210*((int) Math.ceil(options.size()/2.0)))));            
             int offsetx=0,offsety=0,i=0;
             System.out.println("\n****************************************************\n");
             System.out.println("Recibiendo candidatos:\n Nombre -> Id");
             for(Candidates candidate: options){
                 //jlabels diseño
-                labelCont.add(new JLabel("<html>"+candidate.getName()+"<br>"+candidate.getParty()+"</html>"));
+                labelCont.add(new JLabel("<html><p align='center'>"+candidate.getName()+"<br>"+candidate.getParty()+"</p></html>"));
                 System.out.println(candidate.getName()+" -> "+candidate.getId());
-                
+                 ImageIcon imgi=new ImageIcon(Hex.decode(candidate.getImage()));
+                labelCont.get(i).setIcon(new ImageIcon(imgi.getImage().getScaledInstance(100, 120, Image.SCALE_DEFAULT)));
                 labelCont.get(i).setName(candidate.getId());
-                labelCont.get(i).setSize(159,100);
+                labelCont.get(i).setSize(170,200);
                 labelCont.get(i).setVisible(true);
-                labelCont.get(i).setLocation(27+offsetx, 140+offsety);
+                labelCont.get(i).setLocation(20+offsetx, 140+offsety);
                 
                 Border border = BorderFactory.createLineBorder(Color.white, 1);
                 labelCont.get(i).setBorder(border);
                 
                 labelCont.get(i).setForeground(new Color(197,197,197));
                 labelCont.get(i).setFont(new Font("LeelawadEE UI", Font.PLAIN, 14));
-                
                 labelCont.get(i).setHorizontalAlignment(JLabel.CENTER);
                 labelCont.get(i).setVerticalAlignment(JLabel.BOTTOM);
-                
+                labelCont.get(i).setVerticalTextPosition(JLabel.BOTTOM);
+                labelCont.get(i).setHorizontalTextPosition(JLabel.CENTER);
                 labelCont.get(i).addMouseListener(new MouseAdapter()  
                 {
                     @Override
@@ -251,10 +253,10 @@ public class VOTE extends javax.swing.JFrame {
                 
                 this.getContentPane().add(labelCont.get(i));
                 
-                offsetx+=169;
-                if (offsetx>169) {
+                offsetx+=190;
+                if (offsetx>190) {
                     offsetx=0;
-                    offsety+=110;
+                    offsety+=210;
                 }
                 i++;
                 
@@ -265,7 +267,7 @@ public class VOTE extends javax.swing.JFrame {
     
     private void getCandidates(){
         try {
-            Socket sck=new Socket("127.0.0.1",6986);
+            Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("Candidates"); 
             

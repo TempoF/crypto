@@ -37,11 +37,12 @@ import objects.*;
  * @author Tempori
  */
 public class CE extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form CE
      */
     private String cel;
+    String MID="127.0.0.1";
     public CE() {
         initComponents();
     }
@@ -63,6 +64,9 @@ public class CE extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -86,6 +90,11 @@ public class CE extends javax.swing.JFrame {
         jTextField1.setFont(new java.awt.Font("Leelawadee UI", 0, 14)); // NOI18N
         jTextField1.setText("FDASFD45645645H789");
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(100, 100, 100)));
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField1KeyPressed(evt);
@@ -115,6 +124,20 @@ public class CE extends javax.swing.JFrame {
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Put your finger with the one you registered on the fingerprint sensor");
 
+        jLabel8.setFont(new java.awt.Font("Leelawadee UI", 0, 14)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Secret:");
+
+        jPasswordField1.setFont(new java.awt.Font("Leelawadee UI", 0, 14)); // NOI18N
+        jPasswordField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(100, 100, 100)));
+
+        jButton1.setText("Continue");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -129,16 +152,24 @@ public class CE extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel7))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(129, 129, 129)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPasswordField1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -153,15 +184,27 @@ public class CE extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1, 1, 1)))
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(33, 33, 33))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(24, 24, 24)))
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -177,8 +220,11 @@ public class CE extends javax.swing.JFrame {
             jLabel5.setForeground(new Color(197,197,197));
             jLabel6.setForeground(new Color(197,197,197));
             jLabel7.setForeground(new Color(197,197,197));
+            jLabel8.setForeground(new Color(197,197,197));
             jTextField1.setForeground(new Color(197,197,197));
             jTextField1.setBackground(new Color(79,83,84));
+            jPasswordField1.setForeground(new Color(197,197,197));
+            jPasswordField1.setBackground(new Color(79,83,84));
             
             jLabel7.setVisible(false);
             BufferedImage logo1 = ImageIO.read(new File("img/title.png"));
@@ -231,6 +277,50 @@ public class CE extends javax.swing.JFrame {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
     }//GEN-LAST:event_formMouseClicked
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String ceText=jTextField1.getText();
+        String heText=new String(this.jPasswordField1.getPassword());
+        
+            if (ceText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter your Elector Key.");
+                jTextField1.requestFocus();                
+                jTextField1.setText("");
+                return;
+            }
+            if (heText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter your Secret.");
+                jPasswordField1.requestFocus();                
+                jPasswordField1.setText("");
+                return;
+            }
+            Pattern p=Pattern.compile("^[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}$");
+            Matcher ce = p.matcher(ceText);
+            if (ce.matches()) {
+                try {
+                    ce.SHA256 sha=new ce.SHA256(ceText);
+                    this.cel=sha.getSha();
+                    SHA256 cesha= new SHA256(heText);
+                    
+                    System.out.println("Hash de clave de elector H(CEL):"+this.cel);
+                    jTextField1.setText("");
+                    jPasswordField1.setText("");
+                    validate(cesha.getSha());
+                } catch (NoSuchAlgorithmException ex) {
+                    jTextField1.setText("");
+                    Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+                }                
+//                displayFingerPrintInput();
+            }else{
+                JOptionPane.showMessageDialog(this, "The Elector key format is not valid.");
+                jTextField1.requestFocus();
+                jTextField1.setText("");
+            }
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     private void closeCE(){
         this.dispose();
@@ -238,7 +328,7 @@ public class CE extends javax.swing.JFrame {
     
     private void validate(String fingerprint){
         try {
-            Socket sck=new Socket("127.0.0.1",6986);
+            Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Verify"); 
@@ -255,7 +345,7 @@ public class CE extends javax.swing.JFrame {
                 go.setVisible(true);
                 closeCE();
             }else{
-                JOptionPane.showMessageDialog(this, "You are not registered in the electoral roll");
+                JOptionPane.showMessageDialog(this, response.getMessage());
                 this.cel="";
                 jTextField1.requestFocus();
                 jTextField1.setText("");
@@ -267,10 +357,14 @@ public class CE extends javax.swing.JFrame {
             
         } catch (IOException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Ocurrio un error durante la autenticacion, por favor llame a un moderador");
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Ocurrio un error durante la autenticacion, por favor llame a un moderador");
+            
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(CE.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Ocurrio un error durante la autenticacion, por favor llame a un moderador");
         }
     }
     
@@ -344,6 +438,7 @@ public class CE extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -351,6 +446,8 @@ public class CE extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

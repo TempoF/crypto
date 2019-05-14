@@ -70,7 +70,15 @@ use Mesa_Registro;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_insert_voter`(IN `id` VARCHAR(65), IN `cl` VARCHAR(20), IN `name` varchar(50), IN `lastp` varchar(30), IN `lastm` varchar(30), IN `finger` varchar(100))
 BEGIN
+Declare rowc int;
+set rowc=0;
 	Insert Into voter values(id, cl, name, lastp, lastm, finger, false);
+	select row_count() into rowc;
+    if(rowc>0) then
+		SELECT true AS result, 'Registro correcto' as message;
+    else
+		SELECT false AS result, 'Registro no completado, intentelo de nuevo' as message;
+    end if;
 END$$
 DELIMITER ;
 
@@ -99,7 +107,15 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_insert_candidate`(IN `id` VARCHAR(65), IN `name` VARCHAR(50), IN `lastp` varchar(30), IN `lastm` varchar(30), IN `party` varchar(100), IN `photo` varchar(100))
 BEGIN
-	Insert Into voter values(id, name, lastp, lastm, party, photo);
+Declare rowc int;
+set rowc=0;
+	Insert Into candidate values(id, name, lastp, lastm, party, photo);
+    select row_count() into rowc;
+    if(rowc>0) then
+		SELECT true AS result, 'Registro correcto' as message;
+    else
+		SELECT false AS result, 'Registro no completado, intentelo de nuevo' as message;
+    end if;
 END$$
 DELIMITER ;
 
@@ -173,6 +189,25 @@ DELIMITER ;
 ###se manda a llamar
 ##call USP_Get_Candidates;
 
+
+##elimina los registros para nueva votacion y pone el periodo
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_set_period`(IN `initD` VARCHAR(65), IN `endD` VARCHAR(50))
+BEGIN
+call USP_prepare_votation;
+	Declare rowc int;
+set rowc=0;
+	Insert Into period values(initD, endD);
+	select row_count() into rowc;
+    if(rowc>0) then
+		SELECT true AS result, 'Registro correcto' as message;
+    else
+		SELECT false AS result, 'Registro no completado, intentelo de nuevo' as message;
+    end if;
+	
+END$$
+DELIMITER ;
 
 ###STORE PROCEDURES mesa de voto
 

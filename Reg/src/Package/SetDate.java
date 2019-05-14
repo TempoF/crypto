@@ -31,6 +31,7 @@ public class SetDate extends javax.swing.JFrame {
     /**
      * Creates new form SetDate
      */
+    String MID="127.0.0.1";
     public SetDate() {
         initComponents();
         setLocationRelativeTo(null);
@@ -240,7 +241,7 @@ public class SetDate extends javax.swing.JFrame {
     System.out.println(init+" - "+end);
     Btn_SaveHour.setEnabled(false);
     try {
-                Socket sck=new Socket("127.0.0.1",6986);
+                Socket sck=new Socket(MID,6986);
                 ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
 
                 SHA256 comd = new SHA256("Datetimes"); 

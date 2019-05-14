@@ -54,13 +54,17 @@
                           <Component id="TXTLnm" alignment="0" pref="214" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel7" alignment="1" min="-2" pref="133" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="1" min="-2" pref="109" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jLabel7" min="-2" pref="133" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="18" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jButton2" min="-2" pref="109" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jButton1" min="-2" pref="109" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,14 +105,16 @@
                   </Group>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jPasswordField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jPasswordField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="20" max="32767" attributes="0"/>
+              <EmptySpace pref="18" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,9 +128,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TXTID">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="13 d&#xed;gitos"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TXTIDActionPerformed"/>
       </Events>
@@ -150,9 +153,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TXTName">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Nombre(s)"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
@@ -160,9 +160,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TXTLnp">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Paterno"/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TXTLnpActionPerformed"/>
       </Events>
@@ -173,9 +170,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="TXTLnm">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Materno"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
     </Component>
@@ -188,14 +182,19 @@
       </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="jPasswordField1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jPasswordField1"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
         <Property name="text" type="java.lang.String" value="Palabra secreta:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Back"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

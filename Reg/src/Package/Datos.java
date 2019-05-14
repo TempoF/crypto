@@ -33,6 +33,7 @@ public class Datos extends javax.swing.JFrame {
      */
 //    private connector conector;
 //    private Connection conn;
+    String MID="127.0.0.1";
     public Datos() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -75,12 +76,12 @@ public class Datos extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
         jLabel8 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/votex.jpg"))); // NOI18N
 
-        TXTID.setText("13 dígitos");
         TXTID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TXTIDActionPerformed(evt);
@@ -94,11 +95,8 @@ public class Datos extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre(s):");
 
-        TXTName.setText("Nombre(s)");
-
         jLabel5.setText("Apellido Paterno: ");
 
-        TXTLnp.setText("Apellido Paterno");
         TXTLnp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TXTLnpActionPerformed(evt);
@@ -107,8 +105,6 @@ public class Datos extends javax.swing.JFrame {
 
         jLabel6.setText("Apellido Materno:");
 
-        TXTLnm.setText("Apellido Materno");
-
         jButton1.setText("Guardar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -116,9 +112,14 @@ public class Datos extends javax.swing.JFrame {
             }
         });
 
-        jPasswordField1.setText("jPasswordField1");
-
         jLabel8.setText("Palabra secreta:");
+
+        jButton2.setText("Back");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,10 +151,14 @@ public class Datos extends javax.swing.JFrame {
                             .addComponent(TXTLnp)
                             .addComponent(TXTLnm, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,12 +190,14 @@ public class Datos extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel8)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(jButton2))
+                .addContainerGap())
         );
 
         pack();
@@ -223,7 +230,7 @@ public class Datos extends javax.swing.JFrame {
 //            e.printStackTrace();
 //        }
         try {
-            Socket sck=new Socket("127.0.0.1",6986);
+            Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Registry"); 
@@ -269,6 +276,13 @@ public class Datos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        MenuAdm menu= new MenuAdm();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -310,6 +324,7 @@ public class Datos extends javax.swing.JFrame {
     private javax.swing.JTextField TXTLnp;
     private javax.swing.JTextField TXTName;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

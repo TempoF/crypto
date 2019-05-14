@@ -5,6 +5,7 @@
  */
 package mv;
 
+import connectors.connector;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +22,10 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +46,8 @@ public class MV {
     /**
      * @param args the command line arguments
      */
+    private static connector conector;
+        private static Connection conn;
     private static void getPublicKey(){
             try {
                 System.out.println("Esperando llave de MI");
@@ -103,7 +110,15 @@ public class MV {
             }
         return 0;
     }
-    
+    private static void connectToDB(){
+        String dbName = "Mesa_Voto";
+        conector = new connector(dbName);
+        conn = conector.connectBD();
+        if (conn != null)
+            System.out.println("Conected to " + dbName + " Succesfully");
+        else
+            System.out.println("Error: " + dbName + " Database conection null");
+    }
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, InvalidKeyException, SignatureException {
        
         ServerSocket sck = new ServerSocket(6987);
@@ -129,7 +144,8 @@ public class MV {
             }
         };
             Thread threadS = new Thread(runnableS);
-            threadS.start(); 
+            threadS.start();   
+            connectToDB();
         
         while(true){
             
@@ -144,43 +160,59 @@ public class MV {
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                     System.out.println("\n****************************************************\n");
                     System.out.println("Recibiendo Voto Firmado");
+                   
+                    Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
+                    ecdsaVerify.initVerify(MIPublic);
+                    System.out.println("Voto Firmado: "+msg.get(1));
+                    System.out.println("V' :"+msg.get(0));
+                    System.out.println("HE :"+msg.get(2));
+                    byte[] signature=Hex.decode(msg.get(1));
+
+                    ecdsaVerify.update(msg.get(0).getBytes("UTF-8"));
+
+                    boolean result = ecdsaVerify.verify(signature);
                     
-//                    if (!new SHA256(msg.get(0)).getSha().equals(msg.get(1))) {
-//                        System.out.println("Integridad comprometida volver a intentar.");
-//                        Response resp=new Response(300,"Integridad comprometida");
-//                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-//                        out.writeObject(resp);
-//                    }else{                 
+                    if (result) {
+                        System.out.println("Origen del voto confirmado");
+                        //sql salvar v' y he
                         
-                            Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
-                            ecdsaVerify.initVerify(MIPublic);
-                            System.out.println("Voto Firmado: "+msg.get(1));
-                            System.out.println("V' :"+msg.get(0));
-                            System.out.println("HE :"+msg.get(2));
-                            byte[] signature=Hex.decode(msg.get(1));
-                            
-                            ecdsaVerify.update(msg.get(0).getBytes("UTF-8"));
-                            
-                            boolean result = ecdsaVerify.verify(signature);
-                            if (result) {
-                                System.out.println("Origen del voto confirmado");
-                                Response resp=new Response(200,"Origen del voto confirmado");
-                                //sql salvar v' y he
+                        
+                        String query = "call USP_Vote (?,?)";
+                        try{
+                            PreparedStatement ps = conn.prepareStatement(query);
+                            ps.setString(1, msg.get(0));
+                            ps.setString(2, msg.get(2));
+                           ResultSet rs= ps.executeQuery();
+                            rs.first();
+        //                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                            if (rs.getBoolean("result")==true) {
+                                Response resp=new Response(200,"Voto satisfactorio.");
                                 ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
                                 out.writeObject(resp);
-                            } else {
-                                System.out.println("Origen del voto desconocido. Voto anulado");
-                                Response resp=new Response(300,"Origen del voto desconocido. Voto anulado");
-                                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                                out.writeObject(resp);
-                            
                             }
-                            
-//                            Response resp=new Response(200,new String(Hex.encode(signature)));
-//                            ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-//                            out.writeObject(resp); 
-//                    }
-                     
+                        } catch (SQLException ex) {
+                             Response resp=new Response(300,"Error al hacer el registro, contacte al administrador");
+                             ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                            out.writeObject(resp);
+                                Logger.getLogger(MV.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                        
+                        
+                        
+                        Response resp=new Response(200,"Origen del voto confirmado");
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                        out.writeObject(resp);
+                    } else {
+                        System.out.println("Origen del voto desconocido. Voto anulado");
+                        Response resp=new Response(300,"Origen del voto desconocido. Voto anulado");
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                        out.writeObject(resp);
+
+                    }
+
             }
         } 
     }

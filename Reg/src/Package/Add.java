@@ -28,11 +28,12 @@ public class Add extends javax.swing.JFrame {
     ArrayList<Candidates> candidates=new ArrayList<>();
     String imgSender;
     int NumCandidates;
+    String MID="127.0.0.1";
     public Add() {
         initComponents();
         setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.white);
-        Btn_Save.setEnabled(false);
+        Btn_Save1.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,8 +52,9 @@ public class Add extends javax.swing.JFrame {
         TextF_2ndSurname = new javax.swing.JTextField();
         TextF_PoliticalParty = new javax.swing.JTextField();
         Lbl_Imagen = new javax.swing.JLabel();
-        Btn_Save = new javax.swing.JButton();
         Btn_SearchImg = new javax.swing.JButton();
+        Btn_Save1 = new javax.swing.JButton();
+        Btn_Save2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,17 +73,24 @@ public class Add extends javax.swing.JFrame {
 
         Lbl_Imagen.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, java.awt.Color.gray));
 
-        Btn_Save.setText("Save");
-        Btn_Save.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Btn_SaveActionPerformed(evt);
-            }
-        });
-
         Btn_SearchImg.setText("Search Imagen");
         Btn_SearchImg.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Btn_SearchImgActionPerformed(evt);
+            }
+        });
+
+        Btn_Save1.setText("Save");
+        Btn_Save1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_Save1ActionPerformed(evt);
+            }
+        });
+
+        Btn_Save2.setText("Back");
+        Btn_Save2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_Save2ActionPerformed(evt);
             }
         });
 
@@ -111,7 +120,10 @@ public class Add extends javax.swing.JFrame {
                                     .addComponent(TextF_1rstSurname, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TextF_Name, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TextF_PoliticalParty, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(Btn_Save))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Btn_Save2)
+                                .addGap(70, 70, 70)
+                                .addComponent(Btn_Save1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Lbl_Imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -139,7 +151,8 @@ public class Add extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Btn_SearchImg)
-                            .addComponent(Btn_Save)))
+                            .addComponent(Btn_Save1)
+                            .addComponent(Btn_Save2)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -165,6 +178,8 @@ public class Add extends javax.swing.JFrame {
 
     private void Btn_SearchImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SearchImgActionPerformed
        JFileChooser fl=new JFileChooser();
+       FileNameExtensionFilter filtro = new FileNameExtensionFilter(".jpg, .bmp, .png & .gif","jpg","bmp","png","gif");
+        fl.setFileFilter(filtro);
         int result= fl.showOpenDialog(this);
         if (result == JFileChooser.CANCEL_OPTION) {
             return;
@@ -194,7 +209,7 @@ public class Add extends javax.swing.JFrame {
         ImageIcon imgi=new ImageIcon(img);
         Lbl_Imagen.setIcon(new ImageIcon(imgi.getImage().getScaledInstance(160, 160, Image.SCALE_DEFAULT)));
        
-        Btn_Save.setEnabled(true);
+        Btn_Save1.setEnabled(true);
     }//GEN-LAST:event_Btn_SearchImgActionPerformed
 
    private String imgPrepare(String dir, String ext){
@@ -210,33 +225,35 @@ public class Add extends javax.swing.JFrame {
              return "";
         }
    }
-    private void Btn_SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SaveActionPerformed
+    private void Btn_Save1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_Save1ActionPerformed
         String ID;
-        String Name;
         String N,AP,AM;
         String PoliticParty;
         
         N = TextF_Name.getText();
         AP = TextF_1rstSurname.getText();
         AM = TextF_2ndSurname.getText();
-        PoliticParty = TextF_PoliticalParty.getText();
+        PoliticParty = TextF_PoliticalParty.getText();        
         ID = IdCandidate.getID();
         if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && !imgSender.equals("")){
             try {
-                Socket sck=new Socket("127.0.0.1",6986);
+                SHA256 shaid = new SHA256(ID+N); 
+                Socket sck=new Socket(MID,6986);
                 ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
 
                 SHA256 comd = new SHA256("RegistryCandidates"); 
-                Candidates sender = new Candidates(N+"--"+AP+"--"+AM,PoliticParty,ID);                
+                Candidates sender = new Candidates(N+"--"+AP+"--"+AM,PoliticParty,shaid.getSha());                
                 sender.setImage(imgSender);
                
                 Request req=new Request(comd.getSha(),(Object)sender);
                 out.writeObject(req);
+                out.flush();
                 ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
                 Response response=(Response)in.readObject();
+                
                 if (response.getCode()==200) {
                     //registro correcto
-                    JOptionPane.showMessageDialog(this, "Registro correcto.");
+                    JOptionPane.showMessageDialog(this, response.getMessage());
                     this.TextF_Name.setText("");
                     this.TextF_1rstSurname.setText("");
                     this.TextF_2ndSurname.setText("");
@@ -245,14 +262,14 @@ public class Add extends javax.swing.JFrame {
                     Lbl_Imagen.revalidate();
                      imgSender="";
                 }else{
-                    JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+                    JOptionPane.showMessageDialog(this,response.getMessage());
                     this.TextF_Name.setText("");
                     this.TextF_1rstSurname.setText("");
                     this.TextF_2ndSurname.setText("");
                     this.TextF_PoliticalParty.setText("");
                     Lbl_Imagen.setIcon(null);
                     Lbl_Imagen.revalidate();
-                    imgSender="";
+                     imgSender="";
 
                 }
                 sck.close();
@@ -278,8 +295,15 @@ public class Add extends javax.swing.JFrame {
             Lbl_Imagen.revalidate();
             JOptionPane.showMessageDialog(null, "Todos los campos son requeridos.");
         }
-        
-    }//GEN-LAST:event_Btn_SaveActionPerformed
+        Btn_Save1.setEnabled(false);
+    }//GEN-LAST:event_Btn_Save1ActionPerformed
+
+    private void Btn_Save2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_Save2ActionPerformed
+        // TODO add your handling code here:
+        MenuAdm menu=new MenuAdm();
+        menu.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_Btn_Save2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,7 +342,8 @@ public class Add extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Add_Title;
-    private javax.swing.JButton Btn_Save;
+    private javax.swing.JButton Btn_Save1;
+    private javax.swing.JButton Btn_Save2;
     private javax.swing.JButton Btn_SearchImg;
     private javax.swing.JLabel Lbl_Imagen;
     private javax.swing.JLabel Logo_Encabezado;

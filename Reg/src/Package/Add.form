@@ -49,7 +49,11 @@
                                   <Component id="TextF_PoliticalParty" min="-2" pref="160" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="Btn_Save" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="Btn_Save2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
+                              <Component id="Btn_Save1" min="-2" pref="123" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -85,7 +89,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="Btn_SearchImg" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="Btn_Save" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="Btn_Save1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="Btn_Save2" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -174,21 +179,28 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="Btn_Save">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Save"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_SaveActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="Btn_SearchImg">
       <Properties>
         <Property name="text" type="java.lang.String" value="Search Imagen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_SearchImgActionPerformed"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnSaveActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="Btn_Save1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_Save1ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="Btn_Save2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Back"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_Save2ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

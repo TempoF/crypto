@@ -6,6 +6,10 @@
 package mi;
 
 import connectors.connector;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,6 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import objects.Candidates;
 import objects.*;
 import org.bouncycastle.jce.ECNamedCurveTable;
@@ -158,13 +163,32 @@ public class MI {
             
             if((new SHA256("Datetimes")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
-                
-                
-            Response resp=new Response(200,"Valido");
-                
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                
-                out.writeObject(resp);
+                String query = "call USP_set_period (?,?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, msg.get(0));
+                    ps.setString(2, msg.get(1));
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                } catch (SQLException ex) {
+                     Response resp=new Response(300,"Error al hacer el registro, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(resp);
+                        Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
                 
                 
@@ -172,7 +196,7 @@ public class MI {
                 
             }else if((new SHA256("Login")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
-                System.out.println(msg.get(0)+" -- "+msg.get(1));
+//                System.out.println(msg.get(0)+" -- "+msg.get(1));
                 String query = "call USP_Check_admin_login (?,?)";
                 try{
                     PreparedStatement ps = conn.prepareStatement(query);
@@ -180,7 +204,7 @@ public class MI {
                     ps.setString(2, msg.get(1));
                    ResultSet rs= ps.executeQuery();
                     rs.first();
-                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
                     if (rs.getBoolean("result")==true) {
                         Response resp=new Response(200,rs.getString("message"));
                         ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
@@ -201,51 +225,153 @@ public class MI {
                 }
                 
                 
-            }else if((new SHA256("RegistryCandidate")).getSha().equals(request)){
-                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+            }else if((new SHA256("RegistryCandidates")).getSha().equals(request)){
+                Candidates msg=(Candidates) req.getMessage();
                 
-                //db query
+                byte[] img = Hex.decode(msg.getImage());
+                ByteArrayInputStream bis = new ByteArrayInputStream(img);
+                BufferedImage bImage2 = ImageIO.read(bis);
+                ImageIO.write(bImage2, "png", new File("../photos/"+msg.getId()+".png") );
                 
-                Response resp=new Response(200,"Valido");
-                
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                
-                out.writeObject(resp);
+                String[] nm=msg.getName().split("--");
+                String query = "call USP_insert_candidate (?,?,?,?,?,?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, msg.getId());
+                    ps.setString(2, nm[0]);
+                    ps.setString(3, nm[1]);
+                    ps.setString(4, nm[2]);
+                    ps.setString(5, msg.getParty());
+                    ps.setString(6, msg.getId()+".png");
+                    
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                } catch (SQLException ex) {
+                     Response resp=new Response(300,"Error al hacer el login, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(resp);
+                        Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             }else if((new SHA256("Registry")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                 
-                //db query
-                
-                Response resp=new Response(200,"Valido");
-                
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                
-                out.writeObject(resp);
+                SHA256 cl = new SHA256(msg.get(0));
+                SHA256 id=new SHA256(cl.getSha()+msg.get(4));
+                String query = "call USP_insert_voter (?,?,?,?,?,?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1,id.getSha() );
+                    ps.setString(2, msg.get(0));
+                    ps.setString(3, msg.get(1));
+                    ps.setString(4, msg.get(2));
+                    ps.setString(5, msg.get(3));
+                    ps.setString(6, msg.get(4));
+                    
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                } catch (SQLException ex) {
+                     Response resp=new Response(300,"Error al hacer el login, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(resp);
+                        Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             }else if((new SHA256("Verify")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                 System.out.println("Se recibe H(CEL+HD): "+msg.get(0));
-                //db query
-                
-                Response resp=new Response(200,"Valido");
-                
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                
-                out.writeObject(resp);
+                String query = "call USP_Check_login (?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, msg.get(0));
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                } catch (SQLException ex) {
+                     Response resp=new Response(300,"Error al hacer el login, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(resp);
+                        Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             }else if((new SHA256("Candidates")).getSha().equals(request)){
             System.out.println("\n****************************************************\n");
                 System.out.println("Envio de candidatos");
                 ArrayList<Candidates> candidates=new ArrayList<>();
-//                candidates.add(new Candidates("Candidato 1","PRN",(new SHA256("Candidato 1")).getSha()));
-//                candidates.add(new Candidates("Candidato 2","PRN",(new SHA256("Candidato 2")).getSha()));
-//                candidates.add(new Candidates("Candidato 3","PRN",(new SHA256("Candidato 3")).getSha()));
-//                candidates.add(new Candidates("Candidato 4","PRN",(new SHA256("Candidato 4")).getSha()));
+                String query = "call USP_Get_Candidates";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);                   
+                   ResultSet rs= ps.executeQuery();
+                    while (rs.next())
+                    {
+                    if (rs.getBoolean("result")==true) {
+                    
+                       Candidates candidato=new Candidates(rs.getString("Name")+" "+rs.getString("LastNameP")+" "+rs.getString("LastNameP"),
+                              rs.getString("party"),rs.getString("IdCandidate"));
+                      
+                      File photo=new File("../photos/"+rs.getString("ProfileImage"));
+                      candidato.setImage(imgPrepare(photo.getAbsolutePath(),"png"));
+                      candidates.add(candidato);
+                   
+                        
+                    
+                    }else{
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                        out.writeObject(new ArrayList<Candidates>());
+                        break;
+                    }
+                    }
+                    ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                    out.writeObject(candidates);
+                    out.flush();
+                   
+                    
+                    
+                } catch (SQLException ex) {
+                    ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                    out.writeObject(candidates);
+                }
 
-
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                out.writeObject(candidates);
+                
+                
                 
                 
             }else if((new SHA256("Signature")).getSha().equals(request)){
@@ -288,6 +414,20 @@ public class MI {
   
         
     }
+    
+    private static String imgPrepare(String dir, String ext){
+       try{
+        BufferedImage image = ImageIO.read(new File(dir));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, ext, baos);
+        byte[] res=baos.toByteArray();
+        return new String(Hex.encode(baos.toByteArray()));
+        
+        }catch(Exception e) {
+             e.printStackTrace();
+             return "";
+        }
+   }
     
     public static KeyPair generateKeys()
     throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException
