@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Objects.*;
+import objects.*;
 
 /**
  *
@@ -38,7 +38,7 @@ public class Datos extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         jLabel1.setEnabled(true);
         this.getContentPane().setBackground(Color.white);
-//        connectToDB();
+//        
     }
     
 //    private void connectToDB(){
@@ -227,7 +227,7 @@ public class Datos extends javax.swing.JFrame {
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Registry"); 
-            SHA256 pass=new SHA256(Arrays.toString(this.jPasswordField1.getPassword()));
+            SHA256 pass=new SHA256(new String(this.jPasswordField1.getPassword()));
             ArrayList<String> sender = new ArrayList<>();
             
             sender.add(this.TXTID.getText());

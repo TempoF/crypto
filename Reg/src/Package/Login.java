@@ -5,8 +5,8 @@
  */
 package Package;
 
-import Objects.Request;
-import Objects.Response;
+import objects.Request;
+import objects.Response;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -160,7 +160,7 @@ public class Login extends javax.swing.JFrame {
             ArrayList<String> sender = new ArrayList<>();
             
             sender.add(this.TxtUser.getText());
-            sender.add(Arrays.toString(this.Txt_Password.getPassword()));
+            sender.add(new String(this.Txt_Password.getPassword()));
             
             Request req=new Request(comd.getSha(),(Object)sender);
             out.writeObject(req);

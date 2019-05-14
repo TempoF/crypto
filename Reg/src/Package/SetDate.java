@@ -5,12 +5,22 @@
  */
 package Package;
 
+import objects.Candidates;
+import objects.Request;
+import objects.Response;
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -227,17 +237,47 @@ public class SetDate extends javax.swing.JFrame {
     System.out.println(endHour);
     String init=datePrepare(initdate)+" "+initHour;
     String end=datePrepare(endDate)+" "+endHour;
-        System.out.println(init+" - "+end);
+    System.out.println(init+" - "+end);
     Btn_SaveHour.setEnabled(false);
-//Creamos la hora con formato del api Java
-//        try {
-//            SimpleDateFormat hour = new SimpleDateFormat("HH:mm:ss");
-//            Date Hourdate = hour.parse(initHour);
-//            System.out.println(Hourdate);
-//        } catch (ParseException ex) {
-//            Logger.getLogger(SetDate.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
+    try {
+                Socket sck=new Socket("127.0.0.1",6986);
+                ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
+
+                SHA256 comd = new SHA256("Datetimes"); 
+                ArrayList<String> sender = new ArrayList<>();            
+                sender.add(init);
+                sender.add(end);
+                Request req=new Request(comd.getSha(),(Object)sender);
+                out.writeObject(req);
+                ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+                Response response=(Response)in.readObject();
+                if (response.getCode()==200) {
+                    //registro correcto
+                    JOptionPane.showMessageDialog(this, "Registro correcto.");
+                     MenuAdm menu = new MenuAdm();
+                    menu.setVisible(true);
+                    this.dispose();
+                    this.StartHour.setSelectedIndex(0);
+                    this.StartMinute.setSelectedIndex(0);
+                    this.EndMinute.setSelectedIndex(0);
+                    this.EndHour.setSelectedIndex(0);
+                    
+                }else{
+                    JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+                     this.StartHour.setSelectedIndex(0);
+                    this.StartMinute.setSelectedIndex(0);
+                    this.EndMinute.setSelectedIndex(0);
+                    this.EndHour.setSelectedIndex(0);
+
+                }
+                sck.close();
+            } catch (IOException ex) {
+               JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+            } catch (NoSuchAlgorithmException ex) {
+               JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+            } catch (ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+            }
         
     }//GEN-LAST:event_Btn_SaveHourActionPerformed
 

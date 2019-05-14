@@ -5,6 +5,7 @@
  */
 package mi;
 
+import connectors.connector;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +22,10 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +46,9 @@ public class MI {
     /**
      * @param args the command line arguments
      */
+    
+        private static connector conector;
+        private static Connection conn;
     
     private static void getPublicKey(){
             try {
@@ -103,6 +111,16 @@ public class MI {
         return 0;
     }
     
+    private static void connectToDB(){
+        String dbName = "Mesa_Registro";
+        conector = new connector(dbName);
+        conn = conector.connectBD();
+        if (conn != null)
+            System.out.println("Conected to " + dbName + " Succesfully");
+        else
+            System.out.println("Error: " + dbName + " Database conection null");
+    }
+    
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
         
         ServerSocket sck = new ServerSocket(6986);
@@ -128,7 +146,7 @@ public class MI {
         };
             Thread threadS = new Thread(runnableS);
             threadS.start();    
-            
+            connectToDB();
         while(true){
             
             cli=sck.accept();
@@ -138,27 +156,50 @@ public class MI {
             
             String request=req.getRequest();
             
-            if((new SHA256("Horarios")).getSha().equals(request)){
+            if((new SHA256("Datetimes")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                 
-                //db query
                 
-                Response resp=new Response(200,"Valido");
+            Response resp=new Response(200,"Valido");
                 
                 ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
                 
                 out.writeObject(resp);
+                
+                
+                
+                
                 
             }else if((new SHA256("Login")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                System.out.println(msg.get(0)+" -- "+msg.get(1));
+                String query = "call USP_Check_admin_login (?,?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, msg.get(0));
+                    ps.setString(2, msg.get(1));
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                } catch (SQLException ex) {
+                     Response resp=new Response(300,"Error al hacer el login, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(resp);
+                        Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
-                //db query
-                
-                Response resp=new Response(200,"Valido");
-                
-                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
-                
-                out.writeObject(resp);
                 
             }else if((new SHA256("RegistryCandidate")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();

@@ -1,5 +1,5 @@
 
-package Objects;
+package objects;
 
 
 public class IdCandidate {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Objects;
+package objects;
 
 import java.awt.Image;
 import java.io.Serializable;

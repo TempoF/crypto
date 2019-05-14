@@ -1,7 +1,7 @@
 package Package;
 
-import Objects.Candidates;
-import Objects.IdCandidate;
+import objects.Candidates;
+import objects.IdCandidate;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -20,8 +20,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import Objects.Request;
-import Objects.Response;
+import objects.Request;
+import objects.Response;
 import org.bouncycastle.util.encoders.Hex;
 
 public class Add extends javax.swing.JFrame {
