@@ -344,7 +344,7 @@ public class MI {
                     {
                     if (rs.getBoolean("result")==true) {
                     
-                       Candidates candidato=new Candidates(rs.getString("Name")+" "+rs.getString("LastNameP")+" "+rs.getString("LastNameP"),
+                       Candidates candidato=new Candidates(rs.getString("Name")+" "+rs.getString("LastNameP")+" "+rs.getString("LastNameM"),
                               rs.getString("party"),rs.getString("IdCandidate"));
                       
                       File photo=new File("../photos/"+rs.getString("ProfileImage"));
@@ -368,6 +368,108 @@ public class MI {
                 } catch (SQLException ex) {
                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
                     out.writeObject(candidates);
+                }
+
+                
+                
+                
+                
+            }else if((new SHA256("CandidatesSimple")).getSha().equals(request)){
+            System.out.println("\n****************************************************\n");
+                System.out.println("Envio de candidatos sin fotos");
+                ArrayList<Candidates> candidates=new ArrayList<>();
+                String query = "call USP_Get_Candidates";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);                   
+                   ResultSet rs= ps.executeQuery();
+                    while (rs.next())
+                    {
+                    if (rs.getBoolean("result")==true) {
+                    
+                       Candidates candidato=new Candidates(rs.getString("Name")+" "+rs.getString("LastNameP")+" "+rs.getString("LastNameP"),
+                              rs.getString("party"),rs.getString("IdCandidate"));
+                      candidates.add(candidato);
+                   
+                        
+                    
+                    }else{
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                        out.writeObject(new ArrayList<Candidates>());
+                        break;
+                    }
+                    }
+                    ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                    out.writeObject(candidates);
+                    out.flush();
+                   
+                    
+                    
+                } catch (SQLException ex) {
+                    ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                    out.writeObject(candidates);
+                }
+
+                
+                
+                
+                
+            }else if((new SHA256("checkPeriod")).getSha().equals(request)){
+                String query = "call USP_period";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);                   
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                   
+                    
+                    
+                } catch (SQLException ex) {
+                   Response resp=new Response(300,"Error al consultar periodo, contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                }
+
+                
+                
+                
+                
+            }else if((new SHA256("VoterTrue")).getSha().equals(request)){
+                ArrayList<String> msg=(ArrayList<String>) req.getMessage();
+                String query = "call USP_voter_true (?)";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query); 
+                   ps.setString(1, msg.get(0));                  
+                   ResultSet rs= ps.executeQuery();
+                    rs.first();
+//                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
+                    if (rs.getBoolean("result")==true) {
+                        Response resp=new Response(200,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }else{
+                        Response resp=new Response(300,rs.getString("message"));
+                        ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                        out.writeObject(resp);
+                    }
+                   
+                    
+                    
+                } catch (SQLException ex) {
+                   Response resp=new Response(300,"Contacte al administrador");
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                    Logger.getLogger(MI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 

@@ -120,6 +120,24 @@ END$$
 DELIMITER ;
 
 
+##  cambia estado de votante
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_voter_true`(IN `id` VARCHAR(65))
+BEGIN
+Declare rowc int;
+set rowc=0;
+	update voter set Vote=true where IDCLHash=id;
+    select row_count() into rowc;
+    if(rowc>0) then
+		SELECT true AS result, 'Registro correcto' as message;
+    else
+		SELECT false AS result, 'Registro no completado, intentelo de nuevo' as message;
+    end if;
+END$$
+DELIMITER ;
+
+
 ## Reinicia la base de datos para nueva votacion
 
 DELIMITER $$
@@ -148,7 +166,7 @@ BEGIN
     BEGIN
         DECLARE CheckExists int;
 	    SET CheckExists = 0; 
-		select count(*) INTO CheckExists from voter where IDCLHash = hash and Vote =false;
+		select count(*) INTO CheckExists from voter where IDCLHash = hash and Vote=false;
 		IF(CheckExists > 0) THEN 
 	        SELECT true AS result, 'Correcto' as message;  
 	    ELSE 
@@ -190,6 +208,28 @@ DELIMITER ;
 ##call USP_Get_Candidates;
 
 
+##comprueba el periodo
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_period`()
+BEGIN
+	DECLARE period int;
+	SET period=0;
+	select count(*) into period from period where DTend < now();
+
+	IF(period > 0) THEN
+        Select true as result, '' as message;
+    ELSE 
+       SELECT false as result, 'Aun no es periodo de resultados' as message; 
+    END IF ;
+	
+END$$
+DELIMITER ;
+
+###se manda a llamar
+##call USP_period;
+
+
 ##elimina los registros para nueva votacion y pone el periodo
 
 DELIMITER $$
@@ -223,6 +263,16 @@ BEGIN
 	Insert Into vote values(vote,hash);
 	SELECT true as result, '' as message; 
 
+	
+END$$
+DELIMITER ;
+
+## musetra los votos
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_get_votes`()
+BEGIN
+        Select true as result, '' as message, vote.* from vote;
+   
 	
 END$$
 DELIMITER ;

@@ -6,6 +6,7 @@
 package mv;
 
 import connectors.connector;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -155,8 +156,43 @@ public class MV {
             Request req=(Request) requestObj;
             
             String request=req.getRequest();
-            
-            if((new SHA256("Signature")).getSha().equals(request)){
+            if((new SHA256("GetVotes")).getSha().equals(request)){
+                ArrayList<String> votesRes=new ArrayList<>();
+                String query = "call USP_get_votes";
+                try{
+                    PreparedStatement ps = conn.prepareStatement(query);
+                   ResultSet rs= ps.executeQuery();
+                   while (rs.next())
+                    {
+                        
+                        if (rs.getBoolean("result")==true) {
+                            
+                            String vprime=rs.getString("IDV");
+                            String hash=rs.getString("Hash");
+                            VERNAM coder1 = new VERNAM();
+
+                            String vprimer=coder1.getVernam(vprime,hash);
+                            System.out.println("Id del candidato : "+(vprimer));
+                            votesRes.add(vprimer);
+
+                        }else{
+                            ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                            out.writeObject(new ArrayList<String>());
+                            break;
+                        }
+                    }
+                   
+                } catch (SQLException ex) {
+                     ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+
+                    out.writeObject(votesRes);
+                        Logger.getLogger(MV.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
+                out.writeObject(votesRes);
+                    
+
+            }else if((new SHA256("Signature")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
                     System.out.println("\n****************************************************\n");
                     System.out.println("Recibiendo Voto Firmado");

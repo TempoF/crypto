@@ -45,10 +45,12 @@ public class VOTE extends javax.swing.JFrame {
      * Creates new form VOTE
      */
     private String fingerprint;
+    private String id;
     String MID="127.0.0.1";
     String MVD="127.0.0.1";
-    public VOTE(String fingerprint) {
+    public VOTE(String fingerprint,String id) {
         this.fingerprint=fingerprint;
+        this.id=id;
         initComponents();
     }
     
@@ -197,6 +199,21 @@ public class VOTE extends javax.swing.JFrame {
             }  else{
                 System.out.println(resp.getMessage());
                 JOptionPane.showMessageDialog(this, "Voto emitido correctamente.");
+                
+                sck=new Socket(MID,6986);
+                out=new ObjectOutputStream(sck.getOutputStream());
+                comd = new SHA256("VoterTrue");           
+                sender =new ArrayList<>();
+                sender.add(this.id);           
+
+                req=new Request(comd.getSha(),sender); 
+
+                out.writeObject(req);
+
+                in = new ObjectInputStream(sck.getInputStream());
+                resp=(Response)in.readObject();
+                System.out.println(resp.getMessage());
+                
                 CE ce=new CE();
                 ce.setVisible(true);
                 this.dispose();

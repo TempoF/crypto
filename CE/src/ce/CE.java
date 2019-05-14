@@ -327,7 +327,7 @@ public class CE extends javax.swing.JFrame {
     }
     
     private void validate(String fingerprint){
-        try {
+        try { 
             Socket sck=new Socket(MID,6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
@@ -341,7 +341,7 @@ public class CE extends javax.swing.JFrame {
             ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
             Response response=(Response)in.readObject();
             if (response.getCode()==200) {
-                VOTE go=new VOTE(fingerprint);
+                VOTE go=new VOTE(fingerprint,vstring.getSha());
                 go.setVisible(true);
                 closeCE();
             }else{
