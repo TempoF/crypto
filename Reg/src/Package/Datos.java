@@ -234,7 +234,7 @@ public class Datos extends javax.swing.JFrame {
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Registry"); 
-            SHA256 pass=new SHA256(new String(this.jPasswordField1.getPassword()));
+            SHA256 pass=new SHA256(new String(this.jPasswordField1.getPassword())+this.TXTID.getText());
             ArrayList<String> sender = new ArrayList<>();
             
             sender.add(this.TXTID.getText());
