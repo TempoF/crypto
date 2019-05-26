@@ -147,7 +147,7 @@ public class Results extends javax.swing.JFrame {
             out.writeObject(req);
              in = new ObjectInputStream(sck.getInputStream());
             ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
-            
+            System.out.println(candidates.size());
             
             sck=new Socket(MVD,6987);
             out= new ObjectOutputStream(sck.getOutputStream());
@@ -159,7 +159,7 @@ public class Results extends javax.swing.JFrame {
             out.writeObject(req);
             in = new ObjectInputStream(sck.getInputStream());
             ArrayList<String> votesRes=(ArrayList<String>)in.readObject();
-            
+            System.out.println(votesRes.size());
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             Map<String, Integer> hm = new HashMap<String, Integer>(); 
   
@@ -167,18 +167,22 @@ public class Results extends javax.swing.JFrame {
             for (int i = 0; i < votesRes.size(); i++) {
                 Integer j = hm.get(votesRes.get(i));
                 hm.put(votesRes.get(i), (j == null) ? 1 : j + 1);
+                
 //                model.addRow(new Object[]{votesRes.get(i).getCandidate(), votesRes.get(i).getParty(), votesRes.get(i).getPercent()+"%"});
             }
             
             for (Map.Entry<String, Integer> val : hm.entrySet()) {
+                System.out.println(val.getKey());
                 for (int i = 0; i < candidates.size(); i++) {
                     if (candidates.get(i).getId().equals(val.getKey())) {
+                        System.out.println(candidates.get(i).getId()+" ==== "+val.getKey());
                         double perc=((double)val.getValue()/(double)votesRes.size())*100.0;
                         String percs=String.format("%2.02f", (float)perc);
                         model.addRow(new Object[]{candidates.get(i).getName(), candidates.get(i).getParty(), percs+"%"});
                     }
                 }
             } 
+            jTable1.setModel(model);
             
             
             

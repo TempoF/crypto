@@ -314,12 +314,16 @@ public class MI {
                     rs.first();
 //                    System.out.println(rs.getBoolean("result")+"--"+rs.getString("message"));
                     if (rs.getBoolean("result")==true) {
+                        System.out.println("El candidato fue validado.");
                         Response resp=new Response(200,rs.getString("message"));
+                        System.out.println("Enviando mensaje: "+rs.getString("message"));
                         ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
 
                         out.writeObject(resp);
                     }else{
+                        System.out.println("El candidato no se encuentra validado.");
                         Response resp=new Response(300,rs.getString("message"));
+                        System.out.println("Enviando mensaje: "+rs.getString("message"));
                         ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
 
                         out.writeObject(resp);
@@ -378,7 +382,7 @@ public class MI {
             System.out.println("\n****************************************************\n");
                 System.out.println("Envio de candidatos sin fotos");
                 ArrayList<Candidates> candidates=new ArrayList<>();
-                String query = "call USP_Get_Candidates";
+                String query = "call USP_Get_Candidates_w";
                 try{
                     PreparedStatement ps = conn.prepareStatement(query);                   
                    ResultSet rs= ps.executeQuery();
@@ -496,6 +500,7 @@ public class MI {
                             ecdsaSign.update(msg.get(0).getBytes("UTF-8"));
                             
                             byte[] signature = ecdsaSign.sign();
+                             System.out.println(signature.length);
                              System.out.println("Voto Firmado: "+new String(Hex.encode(signature)));
                             Response resp=new Response(200,new String(Hex.encode(signature)));
                             

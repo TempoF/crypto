@@ -208,6 +208,19 @@ DELIMITER ;
 ##call USP_Get_Candidates;
 
 
+##llama a los candidatos
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_Get_Candidates_W`()
+BEGIN
+	
+        Select true as result, '' as message, candidate.* from candidate;
+
+	
+END$$
+DELIMITER ;
+
+
 ##comprueba el periodo
 
 DELIMITER $$
