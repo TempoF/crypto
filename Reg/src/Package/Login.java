@@ -31,7 +31,7 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Registro
      */
     
-    String MID="127.0.0.1";
+    String MID="66.70.157.20";
     public Login() {
         initComponents();
         setLocationRelativeTo(null);

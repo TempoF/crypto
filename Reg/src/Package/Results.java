@@ -31,8 +31,8 @@ public class Results extends javax.swing.JFrame {
     /**
      * Creates new form Results
      */
-    String MID="127.0.0.1";
-    String MVD="127.0.0.1";
+    String MID="66.70.157.20";
+    String MVD="66.70.157.20";
     public Results() {
         initComponents();
         DefaultTableModel model = new DefaultTableModel();

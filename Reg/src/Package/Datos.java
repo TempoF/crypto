@@ -33,7 +33,7 @@ public class Datos extends javax.swing.JFrame {
      */
 //    private connector conector;
 //    private Connection conn;
-    String MID="127.0.0.1";
+    String MID="66.70.157.20";
     public Datos() {
         initComponents();
         this.setLocationRelativeTo(null);

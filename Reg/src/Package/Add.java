@@ -28,7 +28,7 @@ public class Add extends javax.swing.JFrame {
     ArrayList<Candidates> candidates=new ArrayList<>();
     String imgSender;
     int NumCandidates;
-    String MID="127.0.0.1";
+    String MID="66.70.157.20";
     public Add() {
         initComponents();
         setLocationRelativeTo(null);

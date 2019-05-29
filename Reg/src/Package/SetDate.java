@@ -31,7 +31,7 @@ public class SetDate extends javax.swing.JFrame {
     /**
      * Creates new form SetDate
      */
-    String MID="127.0.0.1";
+    String MID="66.70.157.20";
     public SetDate() {
         initComponents();
         setLocationRelativeTo(null);
