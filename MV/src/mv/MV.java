@@ -157,6 +157,7 @@ public class MV {
             
             String request=req.getRequest();
             if((new SHA256("GetVotes")).getSha().equals(request)){
+                System.out.println("Obteniendo votos....");
                 ArrayList<String> votesRes=new ArrayList<>();
                 String query = "call USP_get_votes";
                 try{
@@ -183,10 +184,11 @@ public class MV {
                     }
                    
                 } catch (SQLException ex) {
+                    System.out.println("Se ha detectado un problema: "+ex.getMessage());
                      ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
 
                     out.writeObject(votesRes);
-                        Logger.getLogger(MV.class.getName()).log(Level.SEVERE, null, ex);
+                        
                 }
                 ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
                 out.writeObject(votesRes);
@@ -194,7 +196,6 @@ public class MV {
 
             }else if((new SHA256("Signature")).getSha().equals(request)){
                 ArrayList<String> msg=(ArrayList<String>) req.getMessage();
-                    System.out.println("\n****************************************************\n");
                     System.out.println("Recibiendo Voto Firmado");
                    
                     Signature ecdsaVerify = Signature.getInstance("SHA256withECDSA", "BC");
@@ -228,11 +229,12 @@ public class MV {
                                 out.writeObject(resp);
                             }
                         } catch (SQLException ex) {
+                             System.out.println("Error de consulta: "+ex.getMessage());
                              Response resp=new Response(300,"Error al hacer el registro, contacte al administrador");
                              ObjectOutputStream out= new ObjectOutputStream(cli.getOutputStream());
 
                             out.writeObject(resp);
-                                Logger.getLogger(MV.class.getName()).log(Level.SEVERE, null, ex);
+                               
                         }
                         
                         

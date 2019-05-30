@@ -10,11 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -26,9 +29,11 @@ import org.bouncycastle.util.encoders.Hex;
 
 public class Add extends javax.swing.JFrame {
     ArrayList<Candidates> candidates=new ArrayList<>();
-    String imgSender;
+    byte[] imgSender;
     int NumCandidates;
-    String MID="66.70.157.20";
+    
+    String MID="127.0.0.1";
+    
     public Add() {
         initComponents();
         setLocationRelativeTo(null);
@@ -212,18 +217,17 @@ public class Add extends javax.swing.JFrame {
         Btn_Save1.setEnabled(true);
     }//GEN-LAST:event_Btn_SearchImgActionPerformed
 
-   private String imgPrepare(String dir, String ext){
-       try{
-        BufferedImage image = ImageIO.read(new File(dir));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, ext, baos);
-        byte[] res=baos.toByteArray();
-        return new String(Hex.encode(baos.toByteArray()));
-        
-        }catch(Exception e) {
-             e.printStackTrace();
-             return "";
+   private byte[] imgPrepare(String dir, String ext){
+      
+        try {
+            BufferedImage image = ImageIO.read(new File(dir));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, ext, baos);
+            return baos.toByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
    }
     private void Btn_Save1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_Save1ActionPerformed
         String ID;
@@ -235,50 +239,59 @@ public class Add extends javax.swing.JFrame {
         AM = TextF_2ndSurname.getText();
         PoliticParty = TextF_PoliticalParty.getText();        
         ID = IdCandidate.getID();
-        if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && !imgSender.equals("")){
+        if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && imgSender!=null){
             try {
                 SHA256 shaid = new SHA256(ID+N); 
-                Socket sck=new Socket(MID,6986);
-                ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
-
-                SHA256 comd = new SHA256("RegistryCandidates"); 
-                Candidates sender = new Candidates(N+"--"+AP+"--"+AM,PoliticParty,shaid.getSha());                
-                sender.setImage(imgSender);
-               
-                Request req=new Request(comd.getSha(),(Object)sender);
-                out.writeObject(req);
-                out.flush();
-                ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
-                Response response=(Response)in.readObject();
-                
-                if (response.getCode()==200) {
-                    //registro correcto
-                    JOptionPane.showMessageDialog(this, response.getMessage());
-                    this.TextF_Name.setText("");
-                    this.TextF_1rstSurname.setText("");
-                    this.TextF_2ndSurname.setText("");
-                    this.TextF_PoliticalParty.setText("");
-                    Lbl_Imagen.setIcon(null);
-                    Lbl_Imagen.revalidate();
-                     imgSender="";
-                }else{
-                    JOptionPane.showMessageDialog(this,response.getMessage());
-                    this.TextF_Name.setText("");
-                    this.TextF_1rstSurname.setText("");
-                    this.TextF_2ndSurname.setText("");
-                    this.TextF_PoliticalParty.setText("");
-                    Lbl_Imagen.setIcon(null);
-                    Lbl_Imagen.revalidate();
-                     imgSender="";
-
+                try (Socket sck = new Socket(MID,6986)) {
+                    OutputStream os = sck.getOutputStream();
+                    ObjectOutputStream out= new ObjectOutputStream(os);
+                    
+                    SHA256 comd = new SHA256("RegistryCandidates");
+                    Candidates sender = new Candidates(N+"--"+AP+"--"+AM,PoliticParty,shaid.getSha());
+                    sender.setImage(imgSender.length+"");
+                    Request req=new Request(comd.getSha(),(Object)sender);
+                    
+                    out.writeObject(req);
+                    out.flush();
+                    
+                    System.out.println("Sending image (" + imgSender.length + " bytes)");
+                    os.write(imgSender,0,imgSender.length);
+                    os.flush();
+                    
+                    ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
+                    Response response=(Response)in.readObject();
+                    
+                    if (response.getCode()==200) {
+                        //registro correcto
+                        JOptionPane.showMessageDialog(this, response.getMessage());
+                        this.TextF_Name.setText("");
+                        this.TextF_1rstSurname.setText("");
+                        this.TextF_2ndSurname.setText("");
+                        this.TextF_PoliticalParty.setText("");
+                        Lbl_Imagen.setIcon(null);
+                        Lbl_Imagen.revalidate();
+                        imgSender=null;
+                    }else{
+                        JOptionPane.showMessageDialog(this,response.getMessage());
+                        this.TextF_Name.setText("");
+                        this.TextF_1rstSurname.setText("");
+                        this.TextF_2ndSurname.setText("");
+                        this.TextF_PoliticalParty.setText("");
+                        Lbl_Imagen.setIcon(null);
+                        Lbl_Imagen.revalidate();
+                        imgSender=null;
+                        
+                    }
                 }
-                sck.close();
             } catch (IOException ex) {
                JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+                Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NoSuchAlgorithmException ex) {
                JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+               Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
+                Logger.getLogger(Add.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             
@@ -290,7 +303,7 @@ public class Add extends javax.swing.JFrame {
             TextF_2ndSurname.setText("");
             TextF_PoliticalParty.setText("");
             ID="";
-            imgSender="";
+            imgSender=null;
             Lbl_Imagen.setIcon(null);
             Lbl_Imagen.revalidate();
             JOptionPane.showMessageDialog(null, "Todos los campos son requeridos.");

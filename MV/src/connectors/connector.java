@@ -10,7 +10,7 @@ public class connector {
     // Host
     public String hostname = "localhost";
     // Puerto
-    public String port = "3336";
+    public String port = "3306";
     // Ruta de nuestra base de datos (desactivamos el uso de SSL con "?useSSL=false")
     public String url;
     // Nombre de usuario

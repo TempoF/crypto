@@ -33,7 +33,7 @@ public class Datos extends javax.swing.JFrame {
      */
 //    private connector conector;
 //    private Connection conn;
-    String MID="66.70.157.20";
+    
     public Datos() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -213,24 +213,10 @@ public class Datos extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
                 
-        /*Login reg = new Login();
-        reg.setVisible(true);
-        this.setVisible(false);*/
-//        String query = "INSERT INTO voter VALUES (?,?,?,?,?,?)";
-//        try{
-////            PreparedStatement ps = conn.prepareStatement(query);
-//            ps.setString(1, "HashMethod");
-//            ps.setString(2, this.TXTID.getText());
-//            ps.setString(3, this.TXTName.getText());
-//            ps.setString(4, this.TXTLnp.getText());
-//            ps.setString(5, this.TXTLnm.getText());
-//            ps.setString(6, "HuellaDigital"+this.TXTName.getText());
-//            ps.executeQuery();
-//        }catch(SQLException e){
-//            e.printStackTrace();
-//        }
+     
         try {
-            Socket sck=new Socket(MID,6986);
+            Socket sck=new Socket(Ips.getMI(),6986);
+            
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Registry"); 
@@ -266,7 +252,7 @@ public class Datos extends javax.swing.JFrame {
             }
             
         } catch (IOException ex) {
-           JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo.");
+           JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, intentelo de nuevo."+ex);
         } catch (NoSuchAlgorithmException ex) {
            JOptionPane.showMessageDialog(this, "Ocurrio un error en el registro, llame al tecnico.");
         } catch (ClassNotFoundException ex) {

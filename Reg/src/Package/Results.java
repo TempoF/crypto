@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import objects.Candidates;
+import objects.Ips;
 import objects.Request;
 import objects.Response;
 import objects.Votes;
@@ -31,8 +32,7 @@ public class Results extends javax.swing.JFrame {
     /**
      * Creates new form Results
      */
-    String MID="66.70.157.20";
-    String MVD="66.70.157.20";
+    
     public Results() {
         initComponents();
         DefaultTableModel model = new DefaultTableModel();
@@ -123,7 +123,7 @@ public class Results extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             
-            Socket sck=new Socket(MID,6986);
+            Socket sck=new Socket(Ips.getMI(),6986);
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             SHA256 comd = new SHA256("checkPeriod"); 
             
@@ -139,7 +139,7 @@ public class Results extends javax.swing.JFrame {
                 this.dispose();
             }          
             
-             sck=new Socket(MID,6986);
+             sck=new Socket(Ips.getMI(),6986);
              out= new ObjectOutputStream(sck.getOutputStream());
              comd = new SHA256("CandidatesSimple"); 
             
@@ -149,7 +149,7 @@ public class Results extends javax.swing.JFrame {
             ArrayList<Candidates> candidates=(ArrayList<Candidates>)in.readObject();
             System.out.println(candidates.size());
             
-            sck=new Socket(MVD,6987);
+            sck=new Socket(Ips.getMV(),6987);
             out= new ObjectOutputStream(sck.getOutputStream());
             
             comd = new SHA256("GetVotes"); 

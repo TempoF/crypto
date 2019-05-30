@@ -20,6 +20,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import objects.Ips;
 
 /**
  *
@@ -31,7 +32,7 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Registro
      */
     
-    String MID="66.70.157.20";
+    
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
@@ -126,35 +127,11 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-//        String user = TxtUser.getText();
-//        String password = Txt_Password.getText();
-//        
-//        String queryMod = "SELECT * FROM moderator WHERE UserName like '" + user + "'";
-//        try{
-//            //PreparedStatement ps = conn.prepareStatement(query); 
-//            Statement s = conn.createStatement();
-//            ResultSet rs = s.executeQuery (queryMod);
-//            //Se obtiene la información de la tabla
-//            //prepareTable(rs);
-//            if (rs.next()){
-//                System.out.println("Moderator: " + rs.getString("UserName"));
-//                System.out.println("Password: " + rs.getString("Password"));
-//                Datos data = new Datos();
-//                data.setVisible(true);
-//                this.setVisible(false);
-//            }else{
-//                Msage_Error.setText("Incorrect username or password");
-//            }
-//            
-//            System.out.println("Consulta finalizada");
-//            
-//        }catch(SQLException ex){
-//            ex.printStackTrace();
-//        }
 
 
     try {
-            Socket sck=new Socket(MID,6986);
+            Socket sck=new Socket(Ips.getMI(),6986);
+            
             ObjectOutputStream out= new ObjectOutputStream(sck.getOutputStream());
             
             SHA256 comd = new SHA256("Login"); 
