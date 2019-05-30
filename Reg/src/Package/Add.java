@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import objects.Ips;
 import objects.Request;
 import objects.Response;
 import org.bouncycastle.util.encoders.Hex;
@@ -32,7 +33,6 @@ public class Add extends javax.swing.JFrame {
     byte[] imgSender;
     int NumCandidates;
     
-    String MID="127.0.0.1";
     
     public Add() {
         initComponents();
@@ -242,7 +242,7 @@ public class Add extends javax.swing.JFrame {
         if(!N.equals("") && !AP.equals("") && !AM.equals("") && !PoliticParty.equals("") && imgSender!=null){
             try {
                 SHA256 shaid = new SHA256(ID+N); 
-                try (Socket sck = new Socket(MID,6986)) {
+                try (Socket sck = new Socket(Ips.getMI(),6986)) {
                     OutputStream os = sck.getOutputStream();
                     ObjectOutputStream out= new ObjectOutputStream(os);
                     
@@ -255,8 +255,21 @@ public class Add extends javax.swing.JFrame {
                     out.flush();
                     
                     System.out.println("Sending image (" + imgSender.length + " bytes)");
-                    os.write(imgSender,0,imgSender.length);
-                    os.flush();
+                    int current=0;
+                    int size=1000;
+                    int i;
+                    for ( i = 0; i < (int)Math.floor(imgSender.length/size); i++) {
+                        System.out.println(size*i+" a "+(size*i+size));
+                        os.write(imgSender,size*i,size);
+                        os.flush(); 
+                    }
+                    if (imgSender.length%size!=0) {
+                        System.out.println(size*i+" a "+(size*i+(imgSender.length%size)));
+                        os.write(imgSender,size*i,imgSender.length%size);
+                        os.flush();
+                    }
+                          
+                                     
                     
                     ObjectInputStream in = new ObjectInputStream(sck.getInputStream());
                     Response response=(Response)in.readObject();

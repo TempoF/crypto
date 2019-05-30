@@ -137,6 +137,7 @@ public class Results extends javax.swing.JFrame {
                 MenuAdm menu= new MenuAdm();
                 menu.setVisible(true);
                 this.dispose();
+                return;
             }          
             
              sck=new Socket(Ips.getMI(),6986);
@@ -174,6 +175,7 @@ public class Results extends javax.swing.JFrame {
             for (Map.Entry<String, Integer> val : hm.entrySet()) {
                 System.out.println(val.getKey());
                 for (int i = 0; i < candidates.size(); i++) {
+                    System.out.println(candidates.get(i).getId());
                     if (candidates.get(i).getId().equals(val.getKey())) {
                         System.out.println(candidates.get(i).getId()+" ==== "+val.getKey());
                         double perc=((double)val.getValue()/(double)votesRes.size())*100.0;

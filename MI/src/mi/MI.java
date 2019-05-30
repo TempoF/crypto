@@ -253,7 +253,6 @@ public class MI {
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
                 int bytesRead = is.read(mybytearray,0,mybytearray.length);
                 int current = bytesRead;
-                
                  do {
                      System.out.println(bytesRead);
                     bytesRead =

@@ -145,7 +145,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_prepare_votation`()
 BEGIN
     delete from voter;
     delete from candidate;
-    delete from period;
 
 END$$
 DELIMITER ;
@@ -246,14 +245,16 @@ DELIMITER ;
 ##elimina los registros para nueva votacion y pone el periodo
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_set_period`(IN `initD` VARCHAR(65), IN `endD` VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_set_period`(IN `initD` datetime, IN `endD` datetime)
 BEGIN
-call USP_prepare_votation;
+
+	delete from period;
 	Declare rowc int;
-set rowc=0;
+	set rowc=0;
 	Insert Into period values(initD, endD);
 	select row_count() into rowc;
     if(rowc>0) then
+    call USP_prepare_votation();
 		SELECT true AS result, 'Registro correcto' as message;
     else
 		SELECT false AS result, 'Registro no completado, intentelo de nuevo' as message;
